@@ -22,18 +22,6 @@ using namespace rapidjson;
 #include "mshabal.h"
 #include "mshabal256.h"
 
-
-//#include <stdio.h>
-//#include <tchar.h>
-
-//#include <string.h>
-//#include <fstream>
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <time.h>
-//#include <vector>
-//
-
 #pragma comment(lib,"Ws2_32.lib")
 //#include <mswsock.h> // Need for SO_UPDATE_CONNECT_CONTEXT
 
