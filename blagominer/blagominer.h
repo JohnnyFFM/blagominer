@@ -52,12 +52,12 @@ unsigned int scoop = 0;
 
 WINDOW * win_main;
 #ifdef __AVX2__
-char const *const version = "v1.170911_AVX2_POC2";
+char const *const version = "v1.170964_AVX2_DEV";
 #else
 #ifdef __AVX__
-char const *const version = "v1.170911_AVX_POC2";
+char const *const version = "v1.170964_AVX_DEV";
 #else
-char const *const version = "v1.170911_POC2";
+char const *const version = "v1.170964_DEV";
 #endif
 #endif 
 //config
@@ -77,8 +77,10 @@ unsigned long long my_target_deadline = MAXDWORD;	// 4294967295;
 SYSTEMTIME cur_time;				// Текущее время
 
 size_t miner_mode = 0;				// режим майнера. 0=соло, 1=пул
-size_t cache_size = 100000;			// размер кэша чтения плотов
-size_t cache_size2 = 100000;		// размер кэша чтения плотов POC2
+size_t cache_size = 16384;			// Cache in nonces (1 nonce in scoop = 64 bytes) for native POC
+size_t cache_size2 = 262144;		// Cache in nonces (1 nonce in scoop = 64 bytes) for on-the-fly POC conversion
+size_t ReadChunkSize = 16384;		// Size of HDD reads in nonces (1 nonce in scoop = 64 bytes)
+
 std::vector<std::string> paths_dir; // пути
 									//bool show_msg = false;				// Показать общение с сервером в отправщике
 									//bool show_updates = false;			// Показать общение с сервером в апдейтере
