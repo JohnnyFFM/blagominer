@@ -52,12 +52,12 @@ unsigned int scoop = 0;
 
 WINDOW * win_main;
 #ifdef __AVX2__
-char const *const version = "v1.170964_AVX2_DEV";
+char const *const version = "v1.170997_AVX2_BFS_DEV";
 #else
 #ifdef __AVX__
-char const *const version = "v1.170964_AVX_DEV";
+char const *const version = "v1.170997_AVX_BFS_DEV";
 #else
-char const *const version = "v1.170964_DEV";
+char const *const version = "v1.170997_BFS_DEV";
 #endif
 #endif 
 //config
@@ -148,7 +148,9 @@ struct t_files {
 	unsigned long long StartNonce;
 	unsigned long long Nonces;
 	unsigned long long Stagger;
+	unsigned long long Offset;
 	bool P2;
+	bool BFS;
 };
 
 //headers
