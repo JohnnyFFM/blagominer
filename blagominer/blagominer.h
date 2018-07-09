@@ -21,6 +21,8 @@ using namespace rapidjson;
 #include "sph_shabal.h"
 #include "mshabal.h"
 #include "mshabal256.h"
+//BFS Support
+#include "bfs.h"
 
 #pragma comment(lib,"Ws2_32.lib")
 //#include <mswsock.h> // Need for SO_UPDATE_CONNECT_CONTEXT
@@ -102,6 +104,11 @@ bool show_winner = false;			// показывать победителя
 unsigned long long POC2StartBlock = 502000;
 //indicates if POC2 is active
 bool POC2 = false;
+
+//BFS TOC
+BFSTOC bfsTOC;
+//4k address of BFSTOC on harddisk. default = 6
+unsigned int bfsTOCOffset = 5;
 
 std::vector<std::thread> worker;
 
