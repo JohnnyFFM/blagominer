@@ -11,8 +11,9 @@ using namespace rapidjson;
 #include <ws2tcpip.h>
 
 //includes
-#include "curses.h" //include pdcurses
 #include <windows.h> //windows API
+#undef  MOUSE_MOVED
+#include "curses.h" //include pdcurses
 #include <thread> //threadding
 #include <vector> //vectors
 #include <sstream>
@@ -81,7 +82,7 @@ SYSTEMTIME cur_time;				// Текущее время
 size_t miner_mode = 0;				// режим майнера. 0=соло, 1=пул
 size_t cache_size = 16384;			// Cache in nonces (1 nonce in scoop = 64 bytes) for native POC
 size_t cache_size2 = 262144;		// Cache in nonces (1 nonce in scoop = 64 bytes) for on-the-fly POC conversion
-size_t ReadChunkSize = 16384;		// Size of HDD reads in nonces (1 nonce in scoop = 64 bytes)
+size_t readChunkSize = 16384;		// Size of HDD reads in nonces (1 nonce in scoop = 64 bytes)
 
 std::vector<std::string> paths_dir; // пути
 									//bool show_msg = false;				// Показать общение с сервером в отправщике
@@ -100,15 +101,18 @@ bool use_log = true;				// Вести лог
 bool use_boost = false;				// Использовать повышенный приоритет для потоков
 bool show_winner = false;			// показывать победителя
 									//short can_generate = 0;				// 0 - disable; 1 - can start generate; 2 - already run generator
-									//POC2: HF Block where POC2 gets active
+//POC2: HF Block where POC2 gets active
 unsigned long long POC2StartBlock = 502000;
 //indicates if POC2 is active
 bool POC2 = false;
 
 //BFS TOC
 BFSTOC bfsTOC;
-//4k address of BFSTOC on harddisk. default = 6
+//4k address of BFSTOC on harddisk. default = 5
 unsigned int bfsTOCOffset = 5;
+//HDD wakeup timer in seconds
+unsigned int hddWakeUpTimer = 180;
+
 
 std::vector<std::thread> worker;
 
