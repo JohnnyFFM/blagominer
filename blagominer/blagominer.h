@@ -115,6 +115,12 @@ unsigned int hddWakeUpTimer = 180;
 
 
 std::vector<std::thread> worker;
+std::thread showWinner;
+sph_shabal_context global_y,local_y;
+mshabal256_context global_x;
+mshabal_context global_z;
+
+bool done =  false;
 
 struct t_worker_progress {
 	size_t Number;
@@ -179,7 +185,7 @@ void proxy_i(void);
 void Log_init(void);
 void send_i(void);
 void work_i(const size_t local_num);
-void GetBlockInfo(unsigned const num_block);
+void ShowWinner(unsigned long long const num_block);
 size_t Get_index_acc(unsigned long long const key);
 void pollLocal(void);
 int xdigit(char const digit);

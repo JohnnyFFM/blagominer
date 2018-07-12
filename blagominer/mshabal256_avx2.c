@@ -307,7 +307,7 @@ extern "C" {
     size_t len)
   {
     size_t ptr, num;
-
+	/*
     if (data0 == NULL) {
       if (data1 == NULL) {
         if (data2 == NULL) {
@@ -364,7 +364,7 @@ extern "C" {
       data6 = data0;
     if (data7 == NULL)
       data7 = data0;
-
+	*/
     ptr = sc->ptr;
     if (ptr != 0) {
       size_t clen;
@@ -437,8 +437,8 @@ extern "C" {
     void *dst0, void *dst1, void *dst2, void *dst3,
     void *dst4, void *dst5, void *dst6, void *dst7)
   {
-    size_t ptr, off;
-    unsigned z, out_size_w32;
+    size_t ptr;
+    unsigned off, z, out_size_w32;
 
     z = 0x80 >> n;
     ptr = sc->ptr;
@@ -466,62 +466,17 @@ extern "C" {
     }
     out_size_w32 = sc->out_size >> 5;
     off = MSHABAL256_FACTOR * 4 * (28 + (16 - out_size_w32));
-    if (dst0 != NULL) {
-      u32 *out;
-
-	  out = (u32 *)dst0;
-      for (z = 0; z < out_size_w32; z++)
-        out[z] = sc->state[off + MSHABAL256_FACTOR * (z << 2) + 0];
-    }
-    if (dst1 != NULL) {
-      u32 *out;
-
-	  out = (u32 *)dst1;
-      for (z = 0; z < out_size_w32; z++)
-        out[z] = sc->state[off + MSHABAL256_FACTOR * (z << 2) + 1];
-    }
-    if (dst2 != NULL) {
-      u32 *out;
-
-	  out = (u32 *)dst2;
-      for (z = 0; z < out_size_w32; z++)
-        out[z] = sc->state[off + MSHABAL256_FACTOR * (z << 2) + 2];
-    }
-    if (dst3 != NULL) {
-      u32 *out;
-
-	  out = (u32 *)dst3;
-      for (z = 0; z < out_size_w32; z++)
-        out[z] = sc->state[off + MSHABAL256_FACTOR * (z << 2) + 3];
-    }
-    if (dst4 != NULL) {
-      u32 *out;
-
-	  out = (u32 *)dst4;
-      for (z = 0; z < out_size_w32; z++)
-        out[z] = sc->state[off + MSHABAL256_FACTOR * (z << 2) + 4];
-    }
-    if (dst5 != NULL) {
-      u32 *out;
-
-	  out = (u32 *)dst5;
-      for (z = 0; z < out_size_w32; z++)
-        out[z] = sc->state[off + MSHABAL256_FACTOR * (z << 2) + 5];
-    }
-    if (dst6 != NULL) {
-      u32 *out;
-
-	  out = (u32 *)dst6;
-      for (z = 0; z < out_size_w32; z++)
-        out[z] = sc->state[off + MSHABAL256_FACTOR * (z << 2) + 6];
-    }
-    if (dst7 != NULL) {
-      u32 *out;
-
-	  out = (u32 *)dst7;
-      for (z = 0; z < out_size_w32; z++)
-        out[z] = sc->state[off + MSHABAL256_FACTOR * (z << 2) + 7];
-    }
+	  for (z = 0; z < out_size_w32; z++) {
+		  unsigned y = off + MSHABAL256_FACTOR * (z << 2);
+		  ((u32 *)dst0)[z] = sc->state[y + 0];
+		  ((u32 *)dst1)[z] = sc->state[y + 1];
+		  ((u32 *)dst2)[z] = sc->state[y + 2];
+		  ((u32 *)dst3)[z] = sc->state[y + 3];
+		  ((u32 *)dst4)[z] = sc->state[y + 4];
+		  ((u32 *)dst5)[z] = sc->state[y + 5];
+		  ((u32 *)dst6)[z] = sc->state[y + 6];
+		  ((u32 *)dst7)[z] = sc->state[y + 7];
+	  }
   }
 
 #ifdef  __cplusplus

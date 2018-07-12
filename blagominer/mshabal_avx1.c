@@ -271,7 +271,7 @@ extern "C" {
 	  const void *data2, const void *data3, size_t len)
   {
 	  size_t ptr, num;
-
+	  /*
 	  if (data0 == NULL) {
 		  if (data1 == NULL) {
 			  if (data2 == NULL) {
@@ -296,7 +296,7 @@ extern "C" {
 		  data2 = data0;
 	  if (data3 == NULL)
 		  data3 = data0;
-
+	  */
 	  ptr = sc->ptr;
 	  if (ptr != 0) {
 		  size_t clen = (sizeof sc->buf0 - ptr);
@@ -343,8 +343,8 @@ extern "C" {
 	  unsigned ub0, unsigned ub1, unsigned ub2, unsigned ub3, unsigned n,
 	  void *dst0, void *dst1, void *dst2, void *dst3)
   {
-	  size_t ptr, off;
-	  unsigned z, out_size_w32;
+	  size_t ptr;
+	  unsigned off, z, out_size_w32;
 
 	  z = 0x80 >> n;
 	  ptr = sc->ptr;
@@ -363,30 +363,12 @@ extern "C" {
 	  }
 	  out_size_w32 = sc->out_size >> 5;
 	  off = 4 * (28 + (16 - out_size_w32));
-	  u32 *out;
-	  if (dst0 != NULL) {
-		  //u32 *out;
-
-		  out = (u32*)dst0;
-		  for (z = 0; z < out_size_w32; z++)  out[(size_t)z] = sc->state[off + (size_t)(z << 2) + 0];
-	  }
-	  if (dst1 != NULL) {
-		 // u32 *out;
-
-		  out = (u32*)dst1;
-		  for (z = 0; z < out_size_w32; z++)  out[(size_t)z] = sc->state[off + (size_t)(z << 2) + 1];
-	  }
-	  if (dst2 != NULL) {
-		  //u32 *out;
-
-		  out = (u32*)dst2;
-		  for (z = 0; z < out_size_w32; z++)  out[(size_t)z] = sc->state[off + (size_t)(z << 2) + 2];
-	  }
-	  if (dst3 != NULL) {
-		  //u32 *out;
-
-		  out = (u32*)dst3;
-		  for (z = 0; z < out_size_w32; z++)  out[(size_t)z] = sc->state[off + (size_t)(z << 2) + 3];
+	  for (z = 0; z < out_size_w32; z++) {
+		  unsigned y = off + (z << 2);
+		  ((u32*)dst0)[z] = sc->state[y + 0];
+		  ((u32*)dst1)[z] = sc->state[y + 1];
+		  ((u32*)dst2)[z] = sc->state[y + 2];
+		  ((u32*)dst3)[z] = sc->state[y + 3];
 	  }
   }
   //#pragma optimize("", on)
