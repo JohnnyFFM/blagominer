@@ -302,8 +302,8 @@ extern "C" {
   /* see shabal_small.h */
   void
     mshabal256(mshabal256_context *sc,
-    const void *data0, const void *data1, const void *data2, const void *data3,
-    const void *data4, const void *data5, const void *data6, const void *data7,
+    void *data0,  void *data1,  void *data2,  void *data3,
+    void *data4,  void *data5,  void *data6,  void *data7,
     size_t len)
   {
     size_t ptr, num;
@@ -392,39 +392,39 @@ extern "C" {
         memcpy(sc->buf6 + ptr, data6, clen);
         memcpy(sc->buf7 + ptr, data7, clen);
         mshabal256_compress(sc, sc->buf0, sc->buf1, sc->buf2, sc->buf3, sc->buf4, sc->buf5, sc->buf6, sc->buf7, 1);
-        data0 = (const unsigned char *)data0 + clen;
-        data1 = (const unsigned char *)data1 + clen;
-        data2 = (const unsigned char *)data2 + clen;
-        data3 = (const unsigned char *)data3 + clen;
-        data4 = (const unsigned char *)data4 + clen;
-        data5 = (const unsigned char *)data5 + clen;
-        data6 = (const unsigned char *)data6 + clen;
-        data7 = (const unsigned char *)data7 + clen;
+        data0 = (unsigned char *)data0 + clen;
+        data1 = (unsigned char *)data1 + clen;
+        data2 = (unsigned char *)data2 + clen;
+        data3 = (unsigned char *)data3 + clen;
+        data4 = (unsigned char *)data4 + clen;
+        data5 = (unsigned char *)data5 + clen;
+        data6 = (unsigned char *)data6 + clen;
+        data7 = (unsigned char *)data7 + clen;
         len -= clen;
       }
     }
 
-    num = len >> 6;
+    num = 1;
     if (num != 0) {
 		mshabal256_compress(sc, (const unsigned char *)data0, (const unsigned char *)data1, (const unsigned char *)data2, (const unsigned char *)data3, (const unsigned char *)data4, (const unsigned char *)data5, (const unsigned char *)data6, (const unsigned char *)data7, num);
-      data0 = (const unsigned char *)data0 + (num << 6);
-      data1 = (const unsigned char *)data1 + (num << 6);
-      data2 = (const unsigned char *)data2 + (num << 6);
-      data3 = (const unsigned char *)data3 + (num << 6);
-      data4 = (const unsigned char *)data4 + (num << 6);
-      data5 = (const unsigned char *)data5 + (num << 6);
-      data6 = (const unsigned char *)data6 + (num << 6);
-      data7 = (const unsigned char *)data7 + (num << 6);
+		sc->xbuf0 = (unsigned char *)data0 + (num << 6);
+		sc->xbuf1 = (unsigned char *)data1 + (num << 6);
+		sc->xbuf2 = (unsigned char *)data2 + (num << 6);
+		sc->xbuf3 = (unsigned char *)data3 + (num << 6);
+		sc->xbuf4 = (unsigned char *)data4 + (num << 6);
+		sc->xbuf5 = (unsigned char *)data5 + (num << 6);
+		sc->xbuf6 = (unsigned char *)data6 + (num << 6);
+		sc->xbuf7 = (unsigned char *)data7 + (num << 6);
     }
     len &= (size_t)63;
-    memcpy(sc->buf0, data0, len);
-    memcpy(sc->buf1, data1, len);
-    memcpy(sc->buf2, data2, len);
-    memcpy(sc->buf3, data3, len);
-    memcpy(sc->buf4, data4, len);
-    memcpy(sc->buf5, data5, len);
-    memcpy(sc->buf6, data6, len);
-    memcpy(sc->buf7, data7, len);
+ //   memcpy(sc->buf0, data0, len);
+   // memcpy(sc->buf1, data1, len);
+   // memcpy(sc->buf2, data2, len);
+  //  memcpy(sc->buf3, data3, len);
+ //   memcpy(sc->buf4, data4, len);
+  //  memcpy(sc->buf5, data5, len);
+  //  memcpy(sc->buf6, data6, len);
+ //   memcpy(sc->buf7, data7, len);
     sc->ptr = len;
   }
 
@@ -442,25 +442,27 @@ extern "C" {
 
     z = 0x80 >> n;
     ptr = sc->ptr;
-    sc->buf0[ptr] = (ub0 & -z) | z;
-    sc->buf1[ptr] = (ub1 & -z) | z;
-    sc->buf2[ptr] = (ub2 & -z) | z;
-    sc->buf3[ptr] = (ub3 & -z) | z;
-    sc->buf4[ptr] = (ub4 & -z) | z;
-    sc->buf5[ptr] = (ub5 & -z) | z;
-    sc->buf6[ptr] = (ub6 & -z) | z;
-    sc->buf7[ptr] = (ub7 & -z) | z;
+    *(sc->xbuf0 + ptr) = (char)((ub0 & -z) | z);
+	*(sc->xbuf1 + ptr) = (char)((ub1 & -z) | z);
+	*(sc->xbuf2 + ptr) = (char)((ub2 & -z) | z);
+	*(sc->xbuf3 + ptr) = (char)((ub3 & -z) | z);
+	*(sc->xbuf4 + ptr) = (char)((ub4 & -z) | z);
+	*(sc->xbuf5 + ptr) = (char)((ub5 & -z) | z);
+	*(sc->xbuf6 + ptr) = (char)((ub6 & -z) | z);
+	*(sc->xbuf7 + ptr) = (char)((ub7 & -z) | z);
     ptr++;
-    memset(sc->buf0 + ptr, 0, (sizeof sc->buf0) - ptr);
-    memset(sc->buf1 + ptr, 0, (sizeof sc->buf1) - ptr);
-    memset(sc->buf2 + ptr, 0, (sizeof sc->buf2) - ptr);
-    memset(sc->buf3 + ptr, 0, (sizeof sc->buf3) - ptr);
-    memset(sc->buf4 + ptr, 0, (sizeof sc->buf4) - ptr);
-    memset(sc->buf5 + ptr, 0, (sizeof sc->buf5) - ptr);
-    memset(sc->buf6 + ptr, 0, (sizeof sc->buf6) - ptr);
-    memset(sc->buf7 + ptr, 0, (sizeof sc->buf7) - ptr);
+    /*
+	memset(sc->xbuf0 + ptr, 0, 31);
+    memset(sc->xbuf1 + ptr, 0, 31);
+    memset(sc->xbuf2 + ptr, 0, 31);
+	memset(sc->xbuf3 + ptr, 0, 31);
+    memset(sc->xbuf4 + ptr, 0, 31);
+    memset(sc->xbuf5 + ptr, 0, 31);
+    memset(sc->xbuf6 + ptr, 0, 31);
+    memset(sc->xbuf7 + ptr, 0, 31);
+	*/
     for (z = 0; z < 4; z++) {
-      mshabal256_compress(sc, sc->buf0, sc->buf1, sc->buf2, sc->buf3, sc->buf4, sc->buf5, sc->buf6, sc->buf7, 1);
+      mshabal256_compress(sc, sc->xbuf0, sc->buf1, sc->xbuf2, sc->xbuf3, sc->xbuf4, sc->xbuf5, sc->xbuf6, sc->xbuf7, 1);
       if (sc->Wlow-- == 0)
         sc->Whigh--;
     }

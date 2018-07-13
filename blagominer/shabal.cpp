@@ -8,14 +8,14 @@ mshabal256_context global_x;
 //AVX2
 void procscoop_m256_8(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
 	char const *cache;
-	char sig0[32 + 64];
-	char sig1[32 + 64];
-	char sig2[32 + 64];
-	char sig3[32 + 64];
-	char sig4[32 + 64];
-	char sig5[32 + 64];
-	char sig6[32 + 64];
-	char sig7[32 + 64];
+	char sig0[32 + 64 + 32];
+	char sig1[32 + 64 + 32];
+	char sig2[32 + 64 + 32];
+	char sig3[32 + 64 + 32];
+	char sig4[32 + 64 + 32];
+	char sig5[32 + 64 + 32];
+	char sig6[32 + 64 + 32];
+	char sig7[32 + 64 + 32];
 	char res0[32];
 	char res1[32];
 	char res2[32];
@@ -35,6 +35,14 @@ void procscoop_m256_8(unsigned long long const nonce, unsigned long long const n
 	memmove(sig5, signature, 32);
 	memmove(sig6, signature, 32);
 	memmove(sig7, signature, 32);
+	memset(&sig0[96], 0, 32);
+	memset(&sig1[96], 0, 32);
+	memset(&sig2[96], 0, 32);
+	memset(&sig3[96], 0, 32);
+	memset(&sig4[96], 0, 32);
+	memset(&sig5[96], 0, 32);
+	memset(&sig6[96], 0, 32);
+	memset(&sig7[96], 0, 32);
 
 	mshabal256_context x;
 
@@ -48,8 +56,9 @@ void procscoop_m256_8(unsigned long long const nonce, unsigned long long const n
 		memmove(&sig6[32], &cache[(v + 6) * 64], 64);
 		memmove(&sig7[32], &cache[(v + 7) * 64], 64);
 
+
 		memcpy(&x, &global_x, sizeof(global_x)); // optimization: mshabal256_init(&x, 256);
-		mshabal256(&x, (const unsigned char*)sig0, (const unsigned char*)sig1, (const unsigned char*)sig2, (const unsigned char*)sig3, (const unsigned char*)sig4, (const unsigned char*)sig5, (const unsigned char*)sig6, (const unsigned char*)sig7, 64 + 32);
+		mshabal256(&x, (unsigned char*)sig0, (unsigned char*)sig1, (unsigned char*)sig2, (unsigned char*)sig3, (unsigned char*)sig4, (unsigned char*)sig5, (unsigned char*)sig6, (unsigned char*)sig7, 64 + 32);
 		mshabal256_close(&x, 0, 0, 0, 0, 0, 0, 0, 0, 0, res0, res1, res2, res3, res4, res5, res6, res7);
 
 		unsigned long long *wertung = (unsigned long long*)res0;

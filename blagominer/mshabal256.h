@@ -88,6 +88,7 @@ extern "C" {
    * private. Such a structure should be allocated and released by
    * the caller, in any memory area.
    */
+#pragma pack(1)
   typedef struct {
     unsigned char buf0[64];
     unsigned char buf1[64];
@@ -97,12 +98,20 @@ extern "C" {
     unsigned char buf5[64];
     unsigned char buf6[64];
     unsigned char buf7[64];
+	unsigned char* xbuf0;
+	unsigned char* xbuf1;
+	unsigned char* xbuf2;
+	unsigned char* xbuf3;
+	unsigned char* xbuf4;
+	unsigned char* xbuf5;
+	unsigned char* xbuf6;
+	unsigned char* xbuf7;
     size_t ptr;
     mshabal256_u32 state[(12 + 16 + 16) * 4 * MSHABAL256_FACTOR];
     mshabal256_u32 Whigh, Wlow;
     unsigned out_size;
   } mshabal256_context;
-
+#pragma pack()
   /*
    * Initialize a context structure. The output size must be a multiple
    * of 32, between 32 and 512 (inclusive). The output size is expressed
@@ -123,8 +132,8 @@ extern "C" {
    * that instance is undefined).
    */
   void mshabal256(mshabal256_context *sc,
-    const void *data0, const void *data1, const void *data2, const void *data3,
-    const void *data4, const void *data5, const void *data6, const void *data7,
+    void *data0,  void *data1,  void *data2, void *data3,
+    void *data4,  void *data5,  void *data6, void *data7,
     size_t len);
 
   /*
