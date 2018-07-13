@@ -1,6 +1,4 @@
 #pragma once
-#include <string>
-#include <windows.h> //windows API
 
 #pragma pack(1)
 struct BFSPlotFile
@@ -26,5 +24,7 @@ struct BFSTOC
 };
 #pragma pack()
 
-//Read BFSTOC from drive
-bool LoadBFSTOC(std::string drive, unsigned int bfsTOCOffset, BFSTOC *bfsTOC);
+extern BFSTOC bfsTOC;							// BFS Table of Contents
+extern unsigned int bfsTOCOffset;				// 4k address of BFSTOC on harddisk. default = 5
+
+bool LoadBFSTOC(std::string drive);				//read BFSTOC from drive
