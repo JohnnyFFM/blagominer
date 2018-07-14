@@ -438,7 +438,7 @@ void th_hash(t_files const * const iter, double * const sum_time_proc, const siz
 	LARGE_INTEGER start_time_proc;
 	QueryPerformanceCounter(&start_time_proc);
 #ifdef __AVX2__
-	procscoop_m256_8(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block AVX2
+	procscoop_m256_8_fast(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block AVX2
 #else
 #ifdef __AVX__
 	procscoop_m_4(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block AVX

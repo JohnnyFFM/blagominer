@@ -111,6 +111,15 @@ extern "C" {
     mshabal256_u32 Whigh, Wlow;
     unsigned out_size;
   } mshabal256_context;
+
+
+#pragma pack(1)
+  typedef struct {         
+	  mshabal256_u32 state[(12 + 16 + 16) * 4 * MSHABAL256_FACTOR];
+	  mshabal256_u32 Whigh, Wlow;
+	  unsigned out_size;
+  } mshabal256_context_fast;
+
 #pragma pack()
   /*
    * Initialize a context structure. The output size must be a multiple
@@ -136,6 +145,12 @@ extern "C" {
     void *data4,  void *data5,  void *data6, void *data7,
     size_t len);
 
+  void mshabal256_fast(mshabal256_context_fast *sc,
+	  void *data0, void *data1, void *data2, void *data3,
+	  void *data4, void *data5, void *data6, void *data7,
+	  void *xdata0, void *xdata1, void *xdata2, void *xdata3,
+	  void *xdata4, void *xdata5, void *xdata6, void *xdata7,
+	  size_t len);
   /*
    * Terminate the Shabal computation incarnated by the provided context
    * structure. "n" shall be a value between 0 and 7 (inclusive): this is
@@ -164,6 +179,16 @@ extern "C" {
     unsigned n,
     void *dst0, void *dst1, void *dst2, void *dst3,
     void *dst4, void *dst5, void *dst6, void *dst7);
+
+  void mshabal256_close_fast(mshabal256_context_fast *sc,
+	  void *buf0, void *buf1, void *buf2, void *buf3,
+	  void *buf4, void *buf5, void *buf6, void *buf7,
+	  void *xbuf0, void *xbuf1, void *xbuf2, void *xbuf3,
+	  void *xbuf4, void *xbuf5, void *xbuf6, void *xbuf7,
+	  void *dst0, void *dst1, void *dst2, void *dst3,
+	  void *dst4, void *dst5, void *dst6, void *dst7,
+	  unsigned n
+	  );
 
 #ifdef  __cplusplus
 }
