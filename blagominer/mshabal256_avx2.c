@@ -462,7 +462,7 @@ extern "C" {
     memset(sc->xbuf7 + ptr, 0, 31);
 	*/
     for (z = 0; z < 4; z++) {
-      mshabal256_compress(sc, sc->xbuf0, sc->buf1, sc->xbuf2, sc->xbuf3, sc->xbuf4, sc->xbuf5, sc->xbuf6, sc->xbuf7, 1);
+      mshabal256_compress(sc, sc->xbuf0, sc->xbuf1, sc->xbuf2, sc->xbuf3, sc->xbuf4, sc->xbuf5, sc->xbuf6, sc->xbuf7, 1);
       if (sc->Wlow-- == 0)
         sc->Whigh--;
     }
