@@ -35,14 +35,23 @@ void procscoop_m256_8(unsigned long long const nonce, unsigned long long const n
 	memmove(sig5, signature, 32);
 	memmove(sig6, signature, 32);
 	memmove(sig7, signature, 32);
-	memset(&sig0[96], 0, 32);
-	memset(&sig1[96], 0, 32);
-	memset(&sig2[96], 0, 32);
-	memset(&sig3[96], 0, 32);
-	memset(&sig4[96], 0, 32);
-	memset(&sig5[96], 0, 32);
-	memset(&sig6[96], 0, 32);
-	memset(&sig7[96], 0, 32);
+	sig0[96] = 0x80;
+	sig1[96] = 0x80;
+	sig2[96] = 0x80;
+	sig3[96] = 0x80;
+	sig4[96] = 0x80;
+	sig5[96] = 0x80;
+	sig6[96] = 0x80;
+	sig7[96] = 0x80;
+	memset(&sig0[97], 0, 31);
+	memset(&sig1[97], 0, 31);
+	memset(&sig2[97], 0, 31);
+	memset(&sig3[97], 0, 31);
+	memset(&sig4[97], 0, 31);
+	memset(&sig5[97], 0, 31);
+	memset(&sig6[97], 0, 31);
+	memset(&sig7[97], 0, 31);
+
 
 	mshabal256_context x;
 

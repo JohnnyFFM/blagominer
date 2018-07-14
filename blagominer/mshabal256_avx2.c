@@ -437,9 +437,10 @@ extern "C" {
     void *dst0, void *dst1, void *dst2, void *dst3,
     void *dst4, void *dst5, void *dst6, void *dst7)
   {
-    size_t ptr;
-    unsigned off, z, out_size_w32;
-
+	unsigned z,off, out_size_w32;
+    
+	 /*
+	size_t ptr;
     z = 0x80 >> n;
     ptr = sc->ptr;
     *(sc->xbuf0 + ptr) = (char)((ub0 & -z) | z);
@@ -451,7 +452,7 @@ extern "C" {
 	*(sc->xbuf6 + ptr) = (char)((ub6 & -z) | z);
 	*(sc->xbuf7 + ptr) = (char)((ub7 & -z) | z);
     ptr++;
-    /*
+    
 	memset(sc->xbuf0 + ptr, 0, 31);
     memset(sc->xbuf1 + ptr, 0, 31);
     memset(sc->xbuf2 + ptr, 0, 31);
