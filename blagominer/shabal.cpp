@@ -36,14 +36,14 @@ void procscoop_m256_8(unsigned long long const nonce, unsigned long long const n
 	memmove(sig5, signature, 32);
 	memmove(sig6, signature, 32);
 	memmove(sig7, signature, 32);
-	sig0[96] = 0x80;
-	sig1[96] = 0x80;
-	sig2[96] = 0x80;
-	sig3[96] = 0x80;
-	sig4[96] = 0x80;
-	sig5[96] = 0x80;
-	sig6[96] = 0x80;
-	sig7[96] = 0x80;
+	sig0[96] = -128;
+	sig1[96] = -128;
+	sig2[96] = -128;
+	sig3[96] = -128;
+	sig4[96] = -128;
+	sig5[96] = -128;
+	sig6[96] = -128;
+	sig7[96] = -128;
 	memset(&sig0[97], 0, 31);
 	memset(&sig1[97], 0, 31);
 	memset(&sig2[97], 0, 31);
@@ -145,21 +145,9 @@ void procscoop_m256_8(unsigned long long const nonce, unsigned long long const n
 void procscoop_m256_8_fast(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
 	char const *cache;
 	char sig0[32];
-	char sig1[32];
-	char sig2[32];
-	char sig3[32];
-	char sig4[32];
-	char sig5[32];
-	char sig6[32];
-	char sig7[32];
+
 	char end0[32];
-	char end1[32];
-	char end2[32];
-	char end3[32];
-	char end4[32];
-	char end5[32];
-	char end6[32];
-	char end7[32];
+
 
 	char res0[32];
 	char res1[32];
@@ -173,29 +161,11 @@ void procscoop_m256_8_fast(unsigned long long const nonce, unsigned long long co
 	unsigned long long v;
 
 	memmove(sig0, signature, 32);
-	memmove(sig1, signature, 32);
-	memmove(sig2, signature, 32);
-	memmove(sig3, signature, 32);
-	memmove(sig4, signature, 32);
-	memmove(sig5, signature, 32);
-	memmove(sig6, signature, 32);
-	memmove(sig7, signature, 32);
-	end0[0] = 0x80;
-	end1[0] = 0x80;
-	end2[0] = 0x80;
-	end3[0] = 0x80;
-	end4[0] = 0x80;
-	end5[0] = 0x80;
-	end6[0] = 0x80;
-	end7[0] = 0x80;
+
+	end0[0] = -128;
+
 	memset(&end0[1], 0, 31);
-	memset(&end1[1], 0, 31);
-	memset(&end2[1], 0, 31);
-	memset(&end3[1], 0, 31);
-	memset(&end4[1], 0, 31);
-	memset(&end5[1], 0, 31);
-	memset(&end6[1], 0, 31);
-	memset(&end7[1], 0, 31);
+
 
 
 	mshabal256_context_fast x;
@@ -215,8 +185,8 @@ void procscoop_m256_8_fast(unsigned long long const nonce, unsigned long long co
 		*/
 
 		memcpy(&x, &x2, sizeof(x2)); // optimization: mshabal256_init(&x, 256);
-		mshabal256_fast(&x, (unsigned char*)sig0, (unsigned char*)sig1, (unsigned char*)sig2, (unsigned char*)sig3, (unsigned char*)sig4, (unsigned char*)sig5, (unsigned char*)sig6, (unsigned char*)sig7, (unsigned char*)&cache[(v + 0) * 64], (unsigned char*)&cache[(v + 1) * 64], (unsigned char*)&cache[(v + 2) * 64], (unsigned char*)&cache[(v + 3) * 64], (unsigned char*)&cache[(v + 4) * 64], (unsigned char*)&cache[(v + 5) * 64], (unsigned char*)&cache[(v + 6) * 64], (unsigned char*)&cache[(v + 7) * 64], 64 + 32);
-		mshabal256_close_fast(&x, (unsigned char*)&cache[(v + 0) * 64 +32], (unsigned char*)&cache[(v + 1) * 64 +32], (unsigned char*)&cache[(v + 2) * 64 +32], (unsigned char*)&cache[(v + 3) * 64 +32], (unsigned char*)&cache[(v + 4) * 64 +32], (unsigned char*)&cache[(v + 5) * 64 +32], (unsigned char*)&cache[(v + 6) * 64 +32], (unsigned char*)&cache[(v + 7) * 64 +32], (unsigned char*)end0, (unsigned char*)end1, (unsigned char*)end2, (unsigned char*)end3, (unsigned char*)end4, (unsigned char*)end5, (unsigned char*)end6, (unsigned char*)end7, res0, res1, res2, res3, res4, res5, res6, res7,0);
+		mshabal256_fast(&x, (unsigned char*)sig0, (unsigned char*)&cache[(v + 0) * 64], (unsigned char*)&cache[(v + 1) * 64], (unsigned char*)&cache[(v + 2) * 64], (unsigned char*)&cache[(v + 3) * 64], (unsigned char*)&cache[(v + 4) * 64], (unsigned char*)&cache[(v + 5) * 64], (unsigned char*)&cache[(v + 6) * 64], (unsigned char*)&cache[(v + 7) * 64], 64 + 32);
+		mshabal256_close_fast(&x, (unsigned char*)&cache[(v + 0) * 64 +32], (unsigned char*)&cache[(v + 1) * 64 +32], (unsigned char*)&cache[(v + 2) * 64 +32], (unsigned char*)&cache[(v + 3) * 64 +32], (unsigned char*)&cache[(v + 4) * 64 +32], (unsigned char*)&cache[(v + 5) * 64 +32], (unsigned char*)&cache[(v + 6) * 64 +32], (unsigned char*)&cache[(v + 7) * 64 +32], (unsigned char*)end0, res0, res1, res2, res3, res4, res5, res6, res7,0);
 
 		unsigned long long *wertung = (unsigned long long*)res0;
 		unsigned long long *wertung1 = (unsigned long long*)res1;

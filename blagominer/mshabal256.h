@@ -146,8 +146,7 @@ extern "C" {
     size_t len);
 
   void mshabal256_fast(mshabal256_context_fast *sc,
-	  void *data0, void *data1, void *data2, void *data3,
-	  void *data4, void *data5, void *data6, void *data7,
+	  void *data0, 
 	  void *xdata0, void *xdata1, void *xdata2, void *xdata3,
 	  void *xdata4, void *xdata5, void *xdata6, void *xdata7,
 	  size_t len);
@@ -183,8 +182,7 @@ extern "C" {
   void mshabal256_close_fast(mshabal256_context_fast *sc,
 	  void *buf0, void *buf1, void *buf2, void *buf3,
 	  void *buf4, void *buf5, void *buf6, void *buf7,
-	  void *xbuf0, void *xbuf1, void *xbuf2, void *xbuf3,
-	  void *xbuf4, void *xbuf5, void *xbuf6, void *xbuf7,
+	  void *xbuf0,
 	  void *dst0, void *dst1, void *dst2, void *dst3,
 	  void *dst4, void *dst5, void *dst6, void *dst7,
 	  unsigned n
