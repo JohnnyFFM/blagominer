@@ -1118,14 +1118,14 @@ extern "C" {
 
 	  }
 
-	  for (j = 0; j < 12; j++)
-		  _mm256_storeu_si256((__m256i *)sc->state + j, A[j]);
-	  for (j = 0; j < 16; j++) {
-		  _mm256_storeu_si256((__m256i *)sc->state + j + 12, B[j]);
-		  _mm256_storeu_si256((__m256i *)sc->state + j + 28, C[j]);
-	  }
+	//  for (j = 0; j < 12; j++)
+		//  _mm256_storeu_si256((__m256i *)sc->state + j, A[j]);
+	  //for (j = 0; j < 16; j++) {
+	//	  _mm256_storeu_si256((__m256i *)sc->state + j + 12, B[j]);
+	//	  _mm256_storeu_si256((__m256i *)sc->state + j + 28, C[j]);
+	 // }
 
-	  _mm256_zeroupper();
+	//  _mm256_zeroupper();
 #undef M
 
 	  if (sc->Wlow-- == 0)
@@ -1133,6 +1133,7 @@ extern "C" {
 
 #define M(i)   _mm256_load_si256(u.data + (i))
 
+	  num = 1;
 	  while (num-- > 0) {
 
 		  for (j = 0; j < 64 * MSHABAL256_FACTOR / 2; j += 4 * MSHABAL256_FACTOR) {
@@ -1309,21 +1310,21 @@ extern "C" {
 
 	  }
 
-	  for (j = 0; j < 12; j++)
-		  _mm256_storeu_si256((__m256i *)sc->state + j, A[j]);
-	  for (j = 0; j < 16; j++) {
-		  _mm256_storeu_si256((__m256i *)sc->state + j + 12, B[j]);
-		  _mm256_storeu_si256((__m256i *)sc->state + j + 28, C[j]);
-	  }
+	//  for (j = 0; j < 12; j++)
+	//	  _mm256_storeu_si256((__m256i *)sc->state + j, A[j]);
+	//  for (j = 0; j < 16; j++) {
+	//	  _mm256_storeu_si256((__m256i *)sc->state + j + 12, B[j]);
+	//	  _mm256_storeu_si256((__m256i *)sc->state + j + 28, C[j]);
+	//  }
 
-	  _mm256_zeroupper();
+	//  _mm256_zeroupper();
 #undef M
 
 	  if (sc->Wlow-- == 0)
 		  sc->Whigh--;
 
 #define M(i)   _mm256_load_si256(u.data + (i))
-
+	  num = 1;
 	  while (num-- > 0) {
 
 		  for (j = 0; j < 64 * MSHABAL256_FACTOR / 2; j += 4 * MSHABAL256_FACTOR) {
@@ -1500,21 +1501,21 @@ extern "C" {
 
 	  }
 
-	  for (j = 0; j < 12; j++)
-		  _mm256_storeu_si256((__m256i *)sc->state + j, A[j]);
-	  for (j = 0; j < 16; j++) {
-		  _mm256_storeu_si256((__m256i *)sc->state + j + 12, B[j]);
-		  _mm256_storeu_si256((__m256i *)sc->state + j + 28, C[j]);
-	  }
+	//  for (j = 0; j < 12; j++)
+	///	  _mm256_storeu_si256((__m256i *)sc->state + j, A[j]);
+	//  for (j = 0; j < 16; j++) {
+	//	  _mm256_storeu_si256((__m256i *)sc->state + j + 12, B[j]);
+	//	  _mm256_storeu_si256((__m256i *)sc->state + j + 28, C[j]);
+	 // }
 
-	  _mm256_zeroupper();
+	 // _mm256_zeroupper();
 #undef M
 
 	  if (sc->Wlow-- == 0)
 		  sc->Whigh--;
 
 #define M(i)   _mm256_load_si256(u.data + (i))
-
+	  num = 1;
 	  while (num-- > 0) {
 
 		  for (j = 0; j < 64 * MSHABAL256_FACTOR / 2; j += 4 * MSHABAL256_FACTOR) {
@@ -1729,10 +1730,10 @@ extern "C" {
 	  unsigned z, off, out_size_w32;
 
 
-	  for (z = 0; z < 4; z++) {
-		  mshabal256_compressB_fast(sc, (const unsigned char *)buf0, (const unsigned char *)buf1, (const unsigned char *)buf2, (const unsigned char *)buf3, (const unsigned char *)buf4, (const unsigned char *)buf5, (const unsigned char *)buf6, (const unsigned char *)buf7, (const unsigned char *)xbuf0, 1);
+	 
+		  mshabal256_compressC_fast(sc, (const unsigned char *)buf0, (const unsigned char *)buf1, (const unsigned char *)buf2, (const unsigned char *)buf3, (const unsigned char *)buf4, (const unsigned char *)buf5, (const unsigned char *)buf6, (const unsigned char *)buf7, (const unsigned char *)xbuf0, 1);
 
-	  }
+	
 	  out_size_w32 = sc->out_size >> 5;
 	  off = MSHABAL256_FACTOR * 4 * (28 + (16 - out_size_w32));
 	  for (z = 0; z < out_size_w32; z++) {
