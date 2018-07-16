@@ -57,9 +57,6 @@
     <ClInclude Include="InstructionSet.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="mshabal256.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="picohttpparser.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -84,9 +81,6 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="mshabal_sse4.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="mshabal256_avx2.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="picohttpparser.c">
@@ -114,6 +108,9 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="worker.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="mshabal_avx2.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

@@ -180,7 +180,6 @@
     <ClInclude Include="InstructionSet.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="mshabal.h" />
-    <ClInclude Include="mshabal256.h" />
     <ClInclude Include="picohttpparser.h" />
     <ClInclude Include="shabal.h" />
     <ClInclude Include="inout.h" />
@@ -196,7 +195,7 @@
     <ClCompile Include="accounts.cpp" />
     <ClCompile Include="blagominer.cpp" />
     <ClCompile Include="logger.cpp" />
-    <ClCompile Include="mshabal256_avx2.c" />
+    <ClCompile Include="mshabal_avx2.c" />
     <ClCompile Include="mshabal_avx1.c" />
     <ClCompile Include="mshabal_sse4.c" />
     <ClCompile Include="inout.cpp" />

@@ -68,8 +68,8 @@ void procscoop_m256_8(unsigned long long const nonce, unsigned long long const n
 
 
 		memcpy(&x, &global_x, sizeof(global_x)); // optimization: mshabal256_init(&x, 256);
-		mshabal256(&x, (unsigned char*)sig0, (unsigned char*)sig1, (unsigned char*)sig2, (unsigned char*)sig3, (unsigned char*)sig4, (unsigned char*)sig5, (unsigned char*)sig6, (unsigned char*)sig7, 64 + 32);
-		mshabal256_close(&x, 0, 0, 0, 0, 0, 0, 0, 0, 0, res0, res1, res2, res3, res4, res5, res6, res7);
+		avx2_mshabal(&x, (unsigned char*)sig0, (unsigned char*)sig1, (unsigned char*)sig2, (unsigned char*)sig3, (unsigned char*)sig4, (unsigned char*)sig5, (unsigned char*)sig6, (unsigned char*)sig7, 64 + 32);
+		avx2_mshabal_close(&x, 0, 0, 0, 0, 0, 0, 0, 0, 0, res0, res1, res2, res3, res4, res5, res6, res7);
 
 		unsigned long long *wertung = (unsigned long long*)res0;
 		unsigned long long *wertung1 = (unsigned long long*)res1;
@@ -145,10 +145,7 @@ void procscoop_m256_8(unsigned long long const nonce, unsigned long long const n
 void procscoop_m256_8_fast(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
 	char const *cache;
 	char sig0[32];
-
 	char end0[32];
-
-
 	char res0[32];
 	char res1[32];
 	char res2[32];
@@ -161,32 +158,17 @@ void procscoop_m256_8_fast(unsigned long long const nonce, unsigned long long co
 	unsigned long long v;
 
 	memmove(sig0, signature, 32);
-
 	end0[0] = -128;
-
 	memset(&end0[1], 0, 31);
-
-
 
 	mshabal256_context_fast x;
 	mshabal256_context_fast x2;
-	memcpy(&x2, &global_x_fast, sizeof(global_x_fast)); // optimization: mshabal256_init(&x, 256);
+	memcpy(&x2, &global_x_fast, sizeof(global_x_fast)); // local copy of global fast context
 
 	for (v = 0; v<n; v += 8) {
-		/*
-		memmove(&sig0[32], &cache[(v + 0) * 64], 64);
-		memmove(&sig1[32], &cache[(v + 1) * 64], 64);
-		memmove(&sig2[32], &cache[(v + 2) * 64], 64);
-		memmove(&sig3[32], &cache[(v + 3) * 64], 64);
-		memmove(&sig4[32], &cache[(v + 4) * 64], 64);
-		memmove(&sig5[32], &cache[(v + 5) * 64], 64);
-		memmove(&sig6[32], &cache[(v + 6) * 64], 64);
-		memmove(&sig7[32], &cache[(v + 7) * 64], 64);
-		*/
 
 		memcpy(&x, &x2, sizeof(x2)); // optimization: mshabal256_init(&x, 256);
-		//mshabal256_fast(&x, (unsigned char*)sig0, (unsigned char*)&cache[(v + 0) * 64], (unsigned char*)&cache[(v + 1) * 64], (unsigned char*)&cache[(v + 2) * 64], (unsigned char*)&cache[(v + 3) * 64], (unsigned char*)&cache[(v + 4) * 64], (unsigned char*)&cache[(v + 5) * 64], (unsigned char*)&cache[(v + 6) * 64], (unsigned char*)&cache[(v + 7) * 64], 64 + 32);
-		mshabal256_openclose_fast(&x, (unsigned char*)sig0, (unsigned char*)&cache[(v + 0) * 64], (unsigned char*)&cache[(v + 1) * 64], (unsigned char*)&cache[(v + 2) * 64], (unsigned char*)&cache[(v + 3) * 64], (unsigned char*)&cache[(v + 4) * 64], (unsigned char*)&cache[(v + 5) * 64], (unsigned char*)&cache[(v + 6) * 64], (unsigned char*)&cache[(v + 7) * 64], (unsigned char*)&cache[(v + 0) * 64 +32], (unsigned char*)&cache[(v + 1) * 64 +32], (unsigned char*)&cache[(v + 2) * 64 +32], (unsigned char*)&cache[(v + 3) * 64 +32], (unsigned char*)&cache[(v + 4) * 64 +32], (unsigned char*)&cache[(v + 5) * 64 +32], (unsigned char*)&cache[(v + 6) * 64 +32], (unsigned char*)&cache[(v + 7) * 64 +32], (unsigned char*)end0, res0, res1, res2, res3, res4, res5, res6, res7,0);
+		avx2_mshabal_openclose_fast(&x, (unsigned char*)sig0, (unsigned char*)&cache[(v + 0) * 64], (unsigned char*)&cache[(v + 1) * 64], (unsigned char*)&cache[(v + 2) * 64], (unsigned char*)&cache[(v + 3) * 64], (unsigned char*)&cache[(v + 4) * 64], (unsigned char*)&cache[(v + 5) * 64], (unsigned char*)&cache[(v + 6) * 64], (unsigned char*)&cache[(v + 7) * 64], (unsigned char*)&cache[(v + 0) * 64 +32], (unsigned char*)&cache[(v + 1) * 64 +32], (unsigned char*)&cache[(v + 2) * 64 +32], (unsigned char*)&cache[(v + 3) * 64 +32], (unsigned char*)&cache[(v + 4) * 64 +32], (unsigned char*)&cache[(v + 5) * 64 +32], (unsigned char*)&cache[(v + 6) * 64 +32], (unsigned char*)&cache[(v + 7) * 64 +32], (unsigned char*)end0, res0, res1, res2, res3, res4, res5, res6, res7,0);
 
 		unsigned long long *wertung = (unsigned long long*)res0;
 		unsigned long long *wertung1 = (unsigned long long*)res1;
@@ -258,6 +240,7 @@ void procscoop_m256_8_fast(unsigned long long const nonce, unsigned long long co
 		}
 	}
 }
+
 //AVX
 void procscoop_m_4(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
 	char const *cache;
@@ -278,7 +261,6 @@ void procscoop_m_4(unsigned long long const nonce, unsigned long long const n, c
 	char res3[32];
 	unsigned posn;
 	mshabal_context z;
-
 
 	for (unsigned long long v = 0; v < n; v += 4)
 	{
