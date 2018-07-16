@@ -273,7 +273,7 @@
     const void *data2, const void *data3, size_t len)
   {
     size_t ptr, num;
-
+	/*
     if (data0 == NULL) {
       if (data1 == NULL) {
         if (data2 == NULL) {
@@ -298,7 +298,7 @@
       data2 = data0;
     if (data3 == NULL)
       data3 = data0;
-
+	  */
     ptr = sc->ptr;
     if (ptr != 0) {
       size_t clen;
@@ -330,16 +330,18 @@
     num = len >> 6;
     if (num != 0) {
       sse4_mshabal_compress(sc, (const unsigned char *)data0, (const unsigned char *)data1, (const unsigned char *)data2, (const unsigned char *)data3, num);
-      data0 = (const unsigned char *)data0 + (num << 6);
-      data1 = (const unsigned char *)data1 + (num << 6);
-      data2 = (const unsigned char *)data2 + (num << 6);
-      data3 = (const unsigned char *)data3 + (num << 6);
+	  sc->xbuf0 = (unsigned char *)data0 + (num << 6);
+	  sc->xbuf1 = (unsigned char *)data1 + (num << 6);
+	  sc->xbuf2 = (unsigned char *)data2 + (num << 6);
+	  sc->xbuf3 = (unsigned char *)data3 + (num << 6);
     }
     len &= (size_t)63;
+	/*
     memcpy(sc->buf0, data0, len);
     memcpy(sc->buf1, data1, len);
     memcpy(sc->buf2, data2, len);
     memcpy(sc->buf3, data3, len);
+	*/
     sc->ptr = len;
   }
 
@@ -349,9 +351,9 @@
     unsigned ub0, unsigned ub1, unsigned ub2, unsigned ub3, unsigned n,
     void *dst0, void *dst1, void *dst2, void *dst3)
   {
-    size_t ptr;
+    //size_t ptr;
     unsigned z, out_size_w32, off;
-
+	/*
     z = 0x80 >> n;
     ptr = sc->ptr;
     sc->buf0[ptr] = (ub0 & -z) | z;
@@ -363,8 +365,9 @@
     memset(sc->buf1 + ptr, 0, (sizeof sc->buf1) - ptr);
     memset(sc->buf2 + ptr, 0, (sizeof sc->buf2) - ptr);
     memset(sc->buf3 + ptr, 0, (sizeof sc->buf3) - ptr);
+	*/
     for (z = 0; z < 4; z++) {
-      sse4_mshabal_compress(sc, sc->buf0, sc->buf1, sc->buf2, sc->buf3, 1);
+      sse4_mshabal_compress(sc, sc->xbuf0, sc->xbuf1, sc->xbuf2, sc->xbuf3, 1);
       if (sc->Wlow-- == 0)
         sc->Whigh--;
     }

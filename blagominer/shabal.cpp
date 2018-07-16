@@ -2,12 +2,12 @@
 #include "shabal.h"
 
 sph_shabal_context global_y;
-mshabal_context global_z;
+mshabal_context global_z, global_w;
 mshabal256_context global_x;
 mshabal256_context_fast global_x_fast;
 
 //AVX2
-void procscoop_m256_8(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
+void procscoop_avx2(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
 	char const *cache;
 	char sig0[32 + 64 + 32];
 	char sig1[32 + 64 + 32];
@@ -141,8 +141,9 @@ void procscoop_m256_8(unsigned long long const nonce, unsigned long long const n
 		}
 	}
 }
+
 //AVX2
-void procscoop_m256_8_fast(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
+void procscoop_avx2_fast(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
 	char const *cache;
 	char sig0[32];
 	char end0[32];
@@ -242,24 +243,32 @@ void procscoop_m256_8_fast(unsigned long long const nonce, unsigned long long co
 }
 
 //AVX
-void procscoop_m_4(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
+void procscoop_avx(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
 	char const *cache;
-	char sig0[32 + 64];
-	char sig1[32 + 64];
-	char sig2[32 + 64];
-	char sig3[32 + 64];
+	char sig0[32 + 64 + 32];
+	char sig1[32 + 64 + 32];
+	char sig2[32 + 64 + 32];
+	char sig3[32 + 64 + 32];
+	char res0[32];
+	char res1[32];
+	char res2[32];
+	char res3[32];
 	cache = data;
+	unsigned posn;
 
 	memcpy(sig0, signature, 32);
 	memcpy(sig1, signature, 32);
 	memcpy(sig2, signature, 32);
 	memcpy(sig3, signature, 32);
+	sig0[96] = -128;
+	sig1[96] = -128;
+	sig2[96] = -128;
+	sig3[96] = -128;
+	memset(&sig0[97], 0, 31);
+	memset(&sig1[97], 0, 31);
+	memset(&sig2[97], 0, 31);
+	memset(&sig3[97], 0, 31);
 
-	char res0[32];
-	char res1[32];
-	char res2[32];
-	char res3[32];
-	unsigned posn;
 	mshabal_context z;
 
 	for (unsigned long long v = 0; v < n; v += 4)
@@ -321,7 +330,94 @@ void procscoop_m_4(unsigned long long const nonce, unsigned long long const n, c
 	}
 }
 
-//SSE
+//SSE4
+void procscoop_sse4(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
+	char const *cache;
+	char sig0[32 + 64 + 32];
+	char sig1[32 + 64 + 32];
+	char sig2[32 + 64 + 32];
+	char sig3[32 + 64 + 32];
+	char res0[32];
+	char res1[32];
+	char res2[32];
+	char res3[32];
+	cache = data;
+	unsigned posn;
+
+	memcpy(sig0, signature, 32);
+	memcpy(sig1, signature, 32);
+	memcpy(sig2, signature, 32);
+	memcpy(sig3, signature, 32);
+	sig0[96] = -128;
+	sig1[96] = -128;
+	sig2[96] = -128;
+	sig3[96] = -128;
+	memset(&sig0[97], 0, 31);
+	memset(&sig1[97], 0, 31);
+	memset(&sig2[97], 0, 31);
+	memset(&sig3[97], 0, 31);
+	mshabal_context z;
+
+	for (unsigned long long v = 0; v < n; v += 4)
+	{
+		memcpy(&sig0[32], &cache[(v + 0) * 64], 64);
+		memcpy(&sig1[32], &cache[(v + 1) * 64], 64);
+		memcpy(&sig2[32], &cache[(v + 2) * 64], 64);
+		memcpy(&sig3[32], &cache[(v + 3) * 64], 64);
+
+		memcpy(&z, &global_w, sizeof(global_w)); // optimization: avx1_mshabal_init(&x, 256);
+		sse4_mshabal(&z, (const unsigned char*)sig0, (const unsigned char*)sig1, (const unsigned char*)sig2, (const unsigned char*)sig3, 64 + 32);
+		sse4_mshabal_close(&z, 0, 0, 0, 0, 0, res0, res1, res2, res3);
+
+		unsigned long long *wertung = (unsigned long long*)res0;
+		unsigned long long *wertung1 = (unsigned long long*)res1;
+		unsigned long long *wertung2 = (unsigned long long*)res2;
+		unsigned long long *wertung3 = (unsigned long long*)res3;
+		posn = 0;
+		if (*wertung1 < *wertung)
+		{
+			*wertung = *wertung1;
+			posn = 1;
+		}
+		if (*wertung2 < *wertung)
+		{
+			*wertung = *wertung2;
+			posn = 2;
+		}
+		if (*wertung3 < *wertung)
+		{
+			*wertung = *wertung3;
+			posn = 3;
+		}
+
+
+		if ((*wertung / baseTarget) <= bests[acc].targetDeadline)
+		{
+			if (*wertung < bests[acc].best)
+			{
+				Log("\nfound deadline=");	Log_llu(*wertung / baseTarget); Log(" nonce=");	Log_llu(nonce + v + posn); Log(" for account: "); Log_llu(bests[acc].account_id); Log(" file: "); Log((char*)file_name.c_str());
+				EnterCriticalSection(&bestsLock);
+				bests[acc].best = *wertung;
+				bests[acc].nonce = nonce + v + posn;
+				bests[acc].DL = *wertung / baseTarget;
+				LeaveCriticalSection(&bestsLock);
+				EnterCriticalSection(&sharesLock);
+				shares.push_back({ file_name, bests[acc].account_id, bests[acc].best, bests[acc].nonce });
+				LeaveCriticalSection(&sharesLock);
+				if (use_debug)
+				{
+					char tbuffer[9];
+					_strtime_s(tbuffer);
+					bm_wattron(2);
+					bm_wprintw("%s [%20llu] found DL:      %9llu\n", tbuffer, bests[acc].account_id, bests[acc].DL, 0);
+					bm_wattroff(2);
+				}
+			}
+		}
+	}
+}
+
+//ALL CPUs
 void procscoop_sph(const unsigned long long nonce, const unsigned long long n, char const *const data, const size_t acc, const std::string &file_name) {
 	char const *cache;
 	char sig[32 + 64];

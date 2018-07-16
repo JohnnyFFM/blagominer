@@ -91,6 +91,10 @@ extern "C" {
     unsigned char buf1[64];
     unsigned char buf2[64];
     unsigned char buf3[64];
+	unsigned char* xbuf0;
+	unsigned char* xbuf1;
+	unsigned char* xbuf2;
+	unsigned char* xbuf3;
     size_t ptr;
     mshabal_u32 state[(12 + 16 + 16) * 4];
     mshabal_u32 Whigh, Wlow;

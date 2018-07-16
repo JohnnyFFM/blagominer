@@ -437,15 +437,18 @@ void th_hash(t_files const * const iter, double * const sum_time_proc, const siz
 	LARGE_INTEGER li;
 	LARGE_INTEGER start_time_proc;
 	QueryPerformanceCounter(&start_time_proc);
+
 #ifdef __AVX2__
-	procscoop_m256_8_fast(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block AVX2
+	procscoop_avx2_fast(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block AVX2
 #else
-#ifdef __AVX__
-	procscoop_m_4(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block AVX
-#else
-	procscoop_sph(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block SSE4
+	#ifdef __AVX__
+		procscoop_avx(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block AVX
+	#else
+			procscoop_sse4(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block SSE4
+//			procscoop_sph(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block SPH, please uncomment one of the two when compiling    
+	#endif
 #endif
-#endif
+
 	QueryPerformanceCounter(&li);
 	*sum_time_proc += (double)(li.QuadPart - start_time_proc.QuadPart);
 	worker_progress[local_num].Reads_bytes += bytes;

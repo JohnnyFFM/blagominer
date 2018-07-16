@@ -11,7 +11,11 @@
 	#ifdef __AVX__
 		char const *const version = "v1.170997_AVX_BFS_DEV";
 	#else
-		char const *const version = "v1.170997_BFS_DEV";
+		#ifdef __SSE__
+			char const *const version = "v1.170997_SSE4_BFS_DEV";
+		#else
+			char const *const version = "v1.170997_BFS_DEV";
+		#endif
 	#endif
 #endif 
 
