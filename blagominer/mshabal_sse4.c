@@ -327,7 +327,7 @@
       }
     }
 
-    num = len >> 6;
+    num = 1;
     if (num != 0) {
       sse4_mshabal_compress(sc, (const unsigned char *)data0, (const unsigned char *)data1, (const unsigned char *)data2, (const unsigned char *)data3, num);
 	  sc->xbuf0 = (unsigned char *)data0 + (num << 6);
