@@ -187,6 +187,19 @@ extern "C" {
 	  void *dst4, void *dst5, void *dst6, void *dst7,
 	  unsigned n
 	  );
+  void
+	  mshabal256_openclose_fast(mshabal256_context_fast *sc,
+		  const unsigned char *fub0,
+		  const unsigned char *xfub0, const unsigned char *xfub1,
+		  const unsigned char *xfub2, const unsigned char *xfub3,
+		  const unsigned char *xfub4, const unsigned char *xfub5,
+		  const unsigned char *xfub6, const unsigned char *xfub7,
+		  void *buf0, void *buf1, void *buf2, void *buf3,
+		  void *buf4, void *buf5, void *buf6, void *buf7,
+		  void *xbuf0,
+		  void *dst0, void *dst1, void *dst2, void *dst3,
+		  void *dst4, void *dst5, void *dst6, void *dst7,
+		  unsigned n);
 
 #ifdef  __cplusplus
 }
