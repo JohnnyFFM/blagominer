@@ -87,19 +87,27 @@ extern "C" {
    * the caller, in any memory area.
    */
   typedef struct {
-    unsigned char buf0[64];
-    unsigned char buf1[64];
-    unsigned char buf2[64];
-    unsigned char buf3[64];
-	unsigned char* xbuf0;
-	unsigned char* xbuf1;
-	unsigned char* xbuf2;
-	unsigned char* xbuf3;
-    size_t ptr;
+	  unsigned char buf0[64];
+	  unsigned char buf1[64];
+	  unsigned char buf2[64];
+	  unsigned char buf3[64];
+	  unsigned char* xbuf0;
+	  unsigned char* xbuf1;
+	  unsigned char* xbuf2;
+	  unsigned char* xbuf3;
+	  size_t ptr;
+	  mshabal_u32 state[(12 + 16 + 16) * 4];
+	  mshabal_u32 Whigh, Wlow;
+	  unsigned out_size;
+  } mshabal_context;
+
+#pragma pack(1)
+  typedef struct {
     mshabal_u32 state[(12 + 16 + 16) * 4];
     mshabal_u32 Whigh, Wlow;
     unsigned out_size;
-  } mshabal_context;
+  } mshabal_context_fast;
+#pragma pack()
 
 #define MSHABAL256_FACTOR 2
 
@@ -201,7 +209,19 @@ extern "C" {
 	  void *dst0, void *dst1, void *dst2, void *dst3,
 	  void *dst4, void *dst5, void *dst6, void *dst7);
 
+  /*
+   * Combined open and close routines
+   */
 
+  void
+	  avx1_mshabal_openclose_fast(mshabal_context_fast *sc,
+		  const unsigned char *fub0,
+		  const unsigned char *xfub0, const unsigned char *xfub1,
+		  const unsigned char *xfub2, const unsigned char *xfub3,
+		  void *buf0, void *buf1, void *buf2, void *buf3,
+		  void *xbuf0,
+		  void *dst0, void *dst1, void *dst2, void *dst3,
+		  unsigned n);
   void
 	  avx2_mshabal_openclose_fast(mshabal256_context_fast *sc,
 		  const unsigned char *fub0,

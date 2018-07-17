@@ -1,10 +1,14 @@
 #include "stdafx.h"
 #include "shabal.h"
 
-sph_shabal_context global_y;
-mshabal_context global_z, global_w;
-mshabal256_context global_x;
-mshabal256_context_fast global_x_fast;
+// context for 1-dimensional shabal (32bit)
+sph_shabal_context global_32;
+// context for 4-dimensional shabal (128bit)
+mshabal_context global_128;
+mshabal_context_fast global_128_fast;
+// context for 8-dimensional shabal (256bit)
+mshabal256_context global_256;
+mshabal256_context_fast global_256_fast;
 
 //AVX2
 void procscoop_avx2(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
@@ -67,7 +71,7 @@ void procscoop_avx2(unsigned long long const nonce, unsigned long long const n, 
 		memmove(&sig7[32], &cache[(v + 7) * 64], 64);
 
 
-		memcpy(&x, &global_x, sizeof(global_x)); // optimization: mshabal256_init(&x, 256);
+		memcpy(&x, &global_256, sizeof(global_256)); // optimization: mshabal256_init(&x, 256);
 		avx2_mshabal(&x, (unsigned char*)sig0, (unsigned char*)sig1, (unsigned char*)sig2, (unsigned char*)sig3, (unsigned char*)sig4, (unsigned char*)sig5, (unsigned char*)sig6, (unsigned char*)sig7, 64 + 32);
 		avx2_mshabal_close(&x, 0, 0, 0, 0, 0, 0, 0, 0, 0, res0, res1, res2, res3, res4, res5, res6, res7);
 
@@ -164,7 +168,7 @@ void procscoop_avx2_fast(unsigned long long const nonce, unsigned long long cons
 
 	mshabal256_context_fast x;
 	mshabal256_context_fast x2;
-	memcpy(&x2, &global_x_fast, sizeof(global_x_fast)); // local copy of global fast context
+	memcpy(&x2, &global_256_fast, sizeof(global_256_fast)); // local copy of global fast context
 
 	for (v = 0; v<n; v += 8) {
 
@@ -278,7 +282,7 @@ void procscoop_avx(unsigned long long const nonce, unsigned long long const n, c
 		memcpy(&sig2[32], &cache[(v + 2) * 64], 64);
 		memcpy(&sig3[32], &cache[(v + 3) * 64], 64);
 
-		memcpy(&z, &global_z, sizeof(global_z)); // optimization: avx1_mshabal_init(&x, 256);
+		memcpy(&z, &global_128, sizeof(global_128)); // optimization: avx1_mshabal_init(&x, 256);
 		avx1_mshabal(&z, (const unsigned char*)sig0, (const unsigned char*)sig1, (const unsigned char*)sig2, (const unsigned char*)sig3, 64 + 32);
 		avx1_mshabal_close(&z, 0, 0, 0, 0, 0, res0, res1, res2, res3);
 
@@ -365,7 +369,7 @@ void procscoop_sse4(unsigned long long const nonce, unsigned long long const n, 
 		memcpy(&sig2[32], &cache[(v + 2) * 64], 64);
 		memcpy(&sig3[32], &cache[(v + 3) * 64], 64);
 
-		memcpy(&z, &global_w, sizeof(global_w)); // optimization: avx1_mshabal_init(&x, 256);
+		memcpy(&z, &global_128, sizeof(global_128)); // optimization: avx1_mshabal_init(&x, 256);
 		sse4_mshabal(&z, (const unsigned char*)sig0, (const unsigned char*)sig1, (const unsigned char*)sig2, (const unsigned char*)sig3, 64 + 32);
 		sse4_mshabal_close(&z, 0, 0, 0, 0, 0, res0, res1, res2, res3);
 
@@ -430,7 +434,7 @@ void procscoop_sph(const unsigned long long nonce, const unsigned long long n, c
 	{
 		memcpy_s(&sig[32], sizeof(sig) - 32, &cache[v * 64], sizeof(char) * 64);
 
-		memcpy(&x, &global_y, sizeof(global_y)); // optimization: sph_shabal256_init(&x);
+		memcpy(&x, &global_32, sizeof(global_32)); // optimization: sph_shabal256_init(&x);
 		sph_shabal256(&x, (const unsigned char*)sig, 64 + 32);
 		sph_shabal256_close(&x, res);
 
@@ -444,6 +448,78 @@ void procscoop_sph(const unsigned long long nonce, const unsigned long long n, c
 				EnterCriticalSection(&bestsLock);
 				bests[acc].best = *wertung;
 				bests[acc].nonce = nonce + v;
+				bests[acc].DL = *wertung / baseTarget;
+				LeaveCriticalSection(&bestsLock);
+				EnterCriticalSection(&sharesLock);
+				shares.push_back({ file_name, bests[acc].account_id, bests[acc].best, bests[acc].nonce });
+				LeaveCriticalSection(&sharesLock);
+				if (use_debug)
+				{
+					char tbuffer[9];
+					_strtime_s(tbuffer);
+					bm_wattron(2);
+					bm_wprintw("%s [%20llu] found DL:      %9llu\n", tbuffer, bests[acc].account_id, bests[acc].DL, 0);
+					bm_wattroff(2);
+				}
+			}
+		}
+	}
+}
+
+
+//AVX
+void procscoop_avx_fast(unsigned long long const nonce, unsigned long long const n, char const *const data, size_t const acc, const std::string &file_name) {
+	char const *cache;
+	char sig0[32];
+	char end0[32];
+	char res0[32];
+	char res1[32];
+	char res2[32];
+	char res3[32];
+	cache = data;
+	unsigned long long v;
+
+	memmove(sig0, signature, 32);
+	end0[0] = -128;
+	memset(&end0[1], 0, 31);
+
+	mshabal_context_fast z, z2;
+	memcpy(&z2, &global_128_fast, sizeof(global_128_fast)); // local copy of global fast context
+
+	for (v = 0; v<n; v += 4) {
+
+		memcpy(&z, &z2, sizeof(z2)); // optimization: mshabal256_init(&x, 256);
+		avx1_mshabal_openclose_fast(&z, (unsigned char*)sig0, (unsigned char*)&cache[(v + 0) * 64], (unsigned char*)&cache[(v + 1) * 64], (unsigned char*)&cache[(v + 2) * 64], (unsigned char*)&cache[(v + 3) * 64], (unsigned char*)&cache[(v + 0) * 64 + 32], (unsigned char*)&cache[(v + 1) * 64 + 32], (unsigned char*)&cache[(v + 2) * 64 + 32], (unsigned char*)&cache[(v + 3) * 64 + 32], (unsigned char*)end0, res0, res1, res2, res3, 0);
+
+		unsigned long long *wertung = (unsigned long long*)res0;
+		unsigned long long *wertung1 = (unsigned long long*)res1;
+		unsigned long long *wertung2 = (unsigned long long*)res2;
+		unsigned long long *wertung3 = (unsigned long long*)res3;
+		unsigned posn = 0;
+		if (*wertung1 < *wertung)
+		{
+			*wertung = *wertung1;
+			posn = 1;
+		}
+		if (*wertung2 < *wertung)
+		{
+			*wertung = *wertung2;
+			posn = 2;
+		}
+		if (*wertung3 < *wertung)
+		{
+			*wertung = *wertung3;
+			posn = 3;
+		}
+
+		if ((*wertung / baseTarget) <= bests[acc].targetDeadline)
+		{
+			if (*wertung < bests[acc].best)
+			{
+				Log("\nfound deadline=");	Log_llu(*wertung / baseTarget); Log(" nonce=");	Log_llu(nonce + v + posn); Log(" for account: "); Log_llu(bests[acc].account_id); Log(" file: "); Log((char*)file_name.c_str());
+				EnterCriticalSection(&bestsLock);
+				bests[acc].best = *wertung;
+				bests[acc].nonce = nonce + v + posn;
 				bests[acc].DL = *wertung / baseTarget;
 				LeaveCriticalSection(&bestsLock);
 				EnterCriticalSection(&sharesLock);
