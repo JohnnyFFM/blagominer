@@ -445,7 +445,7 @@ void th_hash(t_files const * const iter, double * const sum_time_proc, const siz
 		procscoop_avx_fast(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block AVX
 	#else
 			procscoop_sse4(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block SSE4
-//			procscoop_sph(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block SPH, please uncomment one of the two when compiling    
+		//	procscoop_sph(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block SPH, please uncomment one of the two when compiling    
 	#endif
 #endif
 
