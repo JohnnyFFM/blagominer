@@ -168,12 +168,63 @@ void procscoop_avx2_fast(unsigned long long const nonce, unsigned long long cons
 
 	mshabal256_context_fast x;
 	mshabal256_context_fast x2;
-	memcpy(&x2, &global_256_fast, sizeof(global_256_fast)); // local copy of global fast context
+	memcpy(&x2, &global_256_fast, sizeof(global_256_fast)); // local copy of global fast contex
+	
+	//prepare shabal inputs
+	union {
+		mshabal_u32 words[64 * MSHABAL256_FACTOR];
+		__m256i data[16];
+	} u1,u2;
+
+	for (int j = 0; j < 64 * MSHABAL256_FACTOR / 2; j += 4 * MSHABAL256_FACTOR) {
+		size_t o = j / MSHABAL256_FACTOR;
+		u1.words[j + 0] = *(mshabal_u32 *)(sig0 + o);
+		u1.words[j + 1] = *(mshabal_u32 *)(sig0 + o);
+		u1.words[j + 2] = *(mshabal_u32 *)(sig0 + o);
+		u1.words[j + 3] = *(mshabal_u32 *)(sig0 + o);
+		u1.words[j + 4] = *(mshabal_u32 *)(sig0 + o);
+		u1.words[j + 5] = *(mshabal_u32 *)(sig0 + o);
+		u1.words[j + 6] = *(mshabal_u32 *)(sig0 + o);
+		u1.words[j + 7] = *(mshabal_u32 *)(sig0 + o);
+		u2.words[j + 0 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 1 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 2 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 3 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 4 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 5 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 6 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 7 + 64] = *(mshabal_u32 *)(end0 + o);
+	}
 
 	for (v = 0; v<n; v += 8) {
-
+		//Inititialise Shabal
 		memcpy(&x, &x2, sizeof(x2)); // optimization: mshabal256_init(&x, 256);
-		avx2_mshabal_openclose_fast(&x, (unsigned char*)sig0, (unsigned char*)&cache[(v + 0) * 64], (unsigned char*)&cache[(v + 1) * 64], (unsigned char*)&cache[(v + 2) * 64], (unsigned char*)&cache[(v + 3) * 64], (unsigned char*)&cache[(v + 4) * 64], (unsigned char*)&cache[(v + 5) * 64], (unsigned char*)&cache[(v + 6) * 64], (unsigned char*)&cache[(v + 7) * 64], (unsigned char*)&cache[(v + 0) * 64 +32], (unsigned char*)&cache[(v + 1) * 64 +32], (unsigned char*)&cache[(v + 2) * 64 +32], (unsigned char*)&cache[(v + 3) * 64 +32], (unsigned char*)&cache[(v + 4) * 64 +32], (unsigned char*)&cache[(v + 5) * 64 +32], (unsigned char*)&cache[(v + 6) * 64 +32], (unsigned char*)&cache[(v + 7) * 64 +32], (unsigned char*)end0, res0, res1, res2, res3, res4, res5, res6, res7,0);
+		
+		//Load and shuffle data 
+		//NB: this can be further optimised by preshuffling plot files depending on SIMD length and use avx2 memcpy
+		//Did not find a away yet to completely avoid memcpys
+
+		for (int j = 0; j < 64 * MSHABAL256_FACTOR / 2; j += 4 * MSHABAL256_FACTOR) {
+			size_t o = j / MSHABAL256_FACTOR;
+			u1.words[j + 0 + 64] = *(mshabal_u32 *)(&cache[(v + 0) * 64] + o);
+			u1.words[j + 1 + 64] = *(mshabal_u32 *)(&cache[(v + 1) * 64] + o);
+			u1.words[j + 2 + 64] = *(mshabal_u32 *)(&cache[(v + 2) * 64] + o);
+			u1.words[j + 3 + 64] = *(mshabal_u32 *)(&cache[(v + 3) * 64] + o);
+			u1.words[j + 4 + 64] = *(mshabal_u32 *)(&cache[(v + 4) * 64] + o);
+			u1.words[j + 5 + 64] = *(mshabal_u32 *)(&cache[(v + 5) * 64] + o);
+			u1.words[j + 6 + 64] = *(mshabal_u32 *)(&cache[(v + 6) * 64] + o);
+			u1.words[j + 7 + 64] = *(mshabal_u32 *)(&cache[(v + 7) * 64] + o);
+			u2.words[j + 0] = *(mshabal_u32 *)(&cache[(v + 0) * 64 + 32] + o);
+			u2.words[j + 1] = *(mshabal_u32 *)(&cache[(v + 1) * 64 + 32] + o);
+			u2.words[j + 2] = *(mshabal_u32 *)(&cache[(v + 2) * 64 + 32] + o);
+			u2.words[j + 3] = *(mshabal_u32 *)(&cache[(v + 3) * 64 + 32] + o);
+			u2.words[j + 4] = *(mshabal_u32 *)(&cache[(v + 4) * 64 + 32] + o);
+			u2.words[j + 5] = *(mshabal_u32 *)(&cache[(v + 5) * 64 + 32] + o);
+			u2.words[j + 6] = *(mshabal_u32 *)(&cache[(v + 6) * 64 + 32] + o);
+			u2.words[j + 7] = *(mshabal_u32 *)(&cache[(v + 7) * 64 + 32] + o);
+		}
+
+		avx2_mshabal_openclose_fast(&x, &u1, &u2, res0, res1, res2, res3, res4, res5, res6, res7,0);
 
 		unsigned long long *wertung = (unsigned long long*)res0;
 		unsigned long long *wertung1 = (unsigned long long*)res1;

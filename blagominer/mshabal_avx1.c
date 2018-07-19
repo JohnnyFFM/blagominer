@@ -1,5 +1,5 @@
 /*
- * Parallel implementation of Shabal, using the SSE2 unit. This code
+ * Parallel implementation of Shabal, using the SSE2 or AVX1 unit. This code
  * compiles and runs on x86 architectures, in 32-bit or 64-bit mode,
  * which possess a SSE2-compatible SIMD unit.
  *
