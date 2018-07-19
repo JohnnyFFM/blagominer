@@ -215,11 +215,7 @@ extern "C" {
 
   void
 	  avx1_mshabal_openclose_fast(mshabal_context_fast *sc,
-		  const unsigned char *fub0,
-		  const unsigned char *xfub0, const unsigned char *xfub1,
-		  const unsigned char *xfub2, const unsigned char *xfub3,
-		  void *buf0, void *buf1, void *buf2, void *buf3,
-		  void *xbuf0,
+		  void *u1, void *u2,
 		  void *dst0, void *dst1, void *dst2, void *dst3,
 		  unsigned n);
   void

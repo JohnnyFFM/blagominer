@@ -401,7 +401,7 @@ extern "C" {
 		  void *u1, void *u2,
 		  size_t num)
   {
-	  _mm256_zeroupper();
+	  //_mm256_zeroupper();
 	  union input {
 		  u32 words[64 * MSHABAL256_FACTOR];
 		  __m256i data[16];
