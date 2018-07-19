@@ -14,6 +14,8 @@
  *
  * Technical remarks and questions can be addressed to:
  * <thomas.pornin@cryptolog.com>
+ *
+ * Routines have been optimized for and limited to burst mining. Deadline generation only, no signature generation possible (use sph_shabal for the deadline). Johnny
  */
 
 #include <stddef.h>
@@ -44,7 +46,6 @@ extern "C" {
     const unsigned char *buf6, const unsigned char *buf7,
     size_t num)
   {
-    _mm256_zeroupper();
     union {
       u32 words[64 * MSHABAL256_FACTOR];
       __m256i data[16];
@@ -307,64 +308,6 @@ extern "C" {
     size_t len)
   {
     size_t ptr, num;
-	/*
-    if (data0 == NULL) {
-      if (data1 == NULL) {
-        if (data2 == NULL) {
-          if (data3 == NULL) {
-            if (data4 == NULL) {
-              if (data5 == NULL) {
-                if (data6 == NULL) {
-                  if (data7 == NULL) {
-                    return;
-                  }
-                  else {
-                    data0 = data7;
-                  }
-                }
-                else {
-                  data0 = data6;
-                }
-              }
-              else {
-                data0 = data5;
-              }
-            }
-            else {
-              data0 = data4;
-            }
-          }
-          else {
-            data0 = data3;
-          }
-        }
-        else {
-          data0 = data2;
-        }
-      }
-      else {
-        data0 = data1;
-      }
-    }
-    //else {
-    //  data0 = data0;
-    //}
-
-    if (data1 == NULL)
-      data1 = data0;
-    if (data2 == NULL)
-      data2 = data0;
-    if (data3 == NULL)
-      data3 = data0;
-    if (data4 == NULL)
-      data4 = data0;
-    if (data5 == NULL)
-      data5 = data0;
-    if (data6 == NULL)
-      data6 = data0;
-    if (data7 == NULL)
-      data7 = data0;
-	*/
     ptr = sc->ptr;
     if (ptr != 0) {
       size_t clen;
@@ -417,14 +360,6 @@ extern "C" {
 		sc->xbuf7 = (unsigned char *)data7 + (num << 6);
     }
     len &= (size_t)63;
- //   memcpy(sc->buf0, data0, len);
-   // memcpy(sc->buf1, data1, len);
-   // memcpy(sc->buf2, data2, len);
-  //  memcpy(sc->buf3, data3, len);
- //   memcpy(sc->buf4, data4, len);
-  //  memcpy(sc->buf5, data5, len);
-  //  memcpy(sc->buf6, data6, len);
- //   memcpy(sc->buf7, data7, len);
     sc->ptr = len;
   }
 
@@ -831,9 +766,9 @@ extern "C" {
 		  unsigned n)
   {
 	  unsigned z, off, out_size_w32;
-
+	  //run shabal
 	  avx2_mshabal_compress_fast(sc, (const unsigned char *)fub0, (const unsigned char *)xfub0, (const unsigned char *)xfub1, (const unsigned char *)xfub2, (const unsigned char *)xfub3, (const unsigned char *)xfub4, (const unsigned char *)xfub5, (const unsigned char *)xfub6, (const unsigned char *)xfub7, (const unsigned char *)buf0, (const unsigned char *)buf1, (const unsigned char *)buf2, (const unsigned char *)buf3, (const unsigned char *)buf4, (const unsigned char *)buf5, (const unsigned char *)buf6, (const unsigned char *)buf7, (const unsigned char *)xbuf0, 1);
-
+	  //extract results
 	  out_size_w32 = sc->out_size >> 5;
 	  off = MSHABAL256_FACTOR * 4 * (28 + (16 - out_size_w32));
 	  for (z = 0; z < out_size_w32; z++) {
