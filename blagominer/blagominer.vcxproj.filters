@@ -77,12 +77,6 @@
     <ClCompile Include="sph_shabal.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="mshabal_avx1.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
-    <ClCompile Include="mshabal_sse4.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="picohttpparser.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -110,7 +104,10 @@
     <ClCompile Include="worker.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="mshabal_avx2.c">
+    <ClCompile Include="mshabal_256.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="mshabal_128.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

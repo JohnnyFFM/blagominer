@@ -38,11 +38,16 @@ extern "C" {
 #define T32(x)         ((x) & C32(0xFFFFFFFF))
 #define ROTL32(x, n)   T32(((x) << (n)) | ((x) >> (32 - (n))))
 
-  static void  avx1_mshabal_compress(mshabal_context *sc,
+  static void  simd128_mshabal_compress(mshabal_context *sc,
 	  const unsigned char *buf0, const unsigned char *buf1,
 	  const unsigned char *buf2, const unsigned char *buf3,
 	  size_t num)
   {
+
+	#ifndef __AVX__
+	  _mm256_zeroupper();
+	#endif
+
 	  union {
 		  u32 words[64];
 		  __m128i data[16];
@@ -227,7 +232,7 @@ extern "C" {
 
    /* see shabal_small.h */
   
-  void  avx1_mshabal_init(mshabal_context *sc, unsigned out_size)
+  void  simd128_mshabal_init(mshabal_context *sc, unsigned out_size)
   {
 	  unsigned u;
 
@@ -248,7 +253,7 @@ extern "C" {
 		  sc->buf3[4 * u + 1] = (out_size + u) >> 8;
 	  }
 	  sc->Whigh = sc->Wlow = C32(0xFFFFFFFF);
-	  avx1_mshabal_compress(sc, sc->buf0, sc->buf1, sc->buf2, sc->buf3, 1);
+	  simd128_mshabal_compress(sc, sc->buf0, sc->buf1, sc->buf2, sc->buf3, 1);
 	  for (u = 0; u < 16; u++) {
 		  sc->buf0[4 * u + 0] = (out_size + u + 16);
 		  sc->buf0[4 * u + 1] = (out_size + u + 16) >> 8;
@@ -259,14 +264,14 @@ extern "C" {
 		  sc->buf3[4 * u + 0] = (out_size + u + 16);
 		  sc->buf3[4 * u + 1] = (out_size + u + 16) >> 8;
 	  }
-	  avx1_mshabal_compress(sc, sc->buf0, sc->buf1, sc->buf2, sc->buf3, 1);
+	  simd128_mshabal_compress(sc, sc->buf0, sc->buf1, sc->buf2, sc->buf3, 1);
 	  sc->ptr = 0;
 	  sc->out_size = out_size;
   }
 
 
   /* see shabal_small.h */
-  void  avx1_mshabal(mshabal_context *sc, const void *data0, const void *data1,
+  void  simd128_mshabal(mshabal_context *sc, const void *data0, const void *data1,
 	  const void *data2, const void *data3, size_t len)
   {
 	  size_t ptr, num;
@@ -286,7 +291,7 @@ extern "C" {
 			  memcpy(sc->buf1 + ptr, data1, clen);
 			  memcpy(sc->buf2 + ptr, data2, clen);
 			  memcpy(sc->buf3 + ptr, data3, clen);
-			  avx1_mshabal_compress(sc, sc->buf0, sc->buf1, sc->buf2, sc->buf3, 1);
+			  simd128_mshabal_compress(sc, sc->buf0, sc->buf1, sc->buf2, sc->buf3, 1);
 			  data0 = (const unsigned char *)data0 + clen;
 			  data1 = (const unsigned char *)data1 + clen;
 			  data2 = (const unsigned char *)data2 + clen;
@@ -297,7 +302,7 @@ extern "C" {
 
 	  num = 1;
 	  if (num != 0) {
-		  avx1_mshabal_compress(sc, (const unsigned char *)data0, (const unsigned char *)data1, (const unsigned char *)data2, (const unsigned char *)data3, num);
+		  simd128_mshabal_compress(sc, (const unsigned char *)data0, (const unsigned char *)data1, (const unsigned char *)data2, (const unsigned char *)data3, num);
 		  sc->xbuf0 = (unsigned char *)data0 + (num << 6);
 		  sc->xbuf1 = (unsigned char *)data1 + (num << 6);
 		  sc->xbuf2 = (unsigned char *)data2 + (num << 6);
@@ -308,14 +313,14 @@ extern "C" {
   }
 
   /* see shabal_small.h */
-  void  avx1_mshabal_close(mshabal_context *sc,
+  void  simd128_mshabal_close(mshabal_context *sc,
 	  unsigned ub0, unsigned ub1, unsigned ub2, unsigned ub3, unsigned n,
 	  void *dst0, void *dst1, void *dst2, void *dst3)
   {
 	  unsigned off, z, out_size_w32;
 
 	  for (z = 0; z < 4; z++) {
-		  avx1_mshabal_compress(sc, sc->xbuf0, sc->xbuf1, sc->xbuf2, sc->xbuf3, 1);
+		  simd128_mshabal_compress(sc, sc->xbuf0, sc->xbuf1, sc->xbuf2, sc->xbuf3, 1);
 		  if (sc->Wlow-- == 0)  sc->Whigh--;
 	  }
 	  out_size_w32 = sc->out_size >> 5;
@@ -330,11 +335,13 @@ extern "C" {
   }
 
   static void
-	  avx1_mshabal_compress_fast(mshabal_context_fast *sc,
+	  simd128_mshabal_compress_fast(mshabal_context_fast *sc,
 		  void *u1, void *u2,
 		  size_t num)
   {
-	  _mm256_zeroupper();
+	  #ifndef __AVX__
+		_mm256_zeroupper();
+	  #endif
 	  union input {
 		  u32 words[64];
 		  __m128i data[16];
@@ -637,14 +644,14 @@ extern "C" {
 
 
   void
-	  avx1_mshabal_openclose_fast(mshabal_context_fast *sc,
+	  simd128_mshabal_openclose_fast(mshabal_context_fast *sc,
 		  void *u1, void *u2,
 		  void *dst0, void *dst1, void *dst2, void *dst3,
 		  unsigned n)
   {
 	  unsigned z, off, out_size_w32;
 	  //run shabal
-	  avx1_mshabal_compress_fast(sc, u1, u2, 1);
+	  simd128_mshabal_compress_fast(sc, u1, u2, 1);
 	  //extract results
 	  out_size_w32 = sc->out_size >> 5;
 	  off = 4 * (28 + (16 - out_size_w32));

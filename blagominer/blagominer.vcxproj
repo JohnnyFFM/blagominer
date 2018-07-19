@@ -507,9 +507,8 @@
     <ClCompile Include="accounts.cpp" />
     <ClCompile Include="blagominer.cpp" />
     <ClCompile Include="logger.cpp" />
-    <ClCompile Include="mshabal_avx2.c" />
-    <ClCompile Include="mshabal_avx1.c" />
-    <ClCompile Include="mshabal_sse4.c" />
+    <ClCompile Include="mshabal_256.c" />
+    <ClCompile Include="mshabal_128.c" />
     <ClCompile Include="inout.cpp" />
     <ClCompile Include="picohttpparser.c" />
     <ClCompile Include="bfs.cpp" />
