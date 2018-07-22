@@ -44,7 +44,7 @@ extern "C" {
 	  size_t num)
   {
 
-	#ifndef __AVX__
+	#ifdef __AVX__
 	  _mm256_zeroupper();
 	#endif
 
@@ -339,7 +339,7 @@ extern "C" {
 		  void *u1, void *u2,
 		  size_t num)
   {
-	  #ifndef __AVX__
+	  #ifdef __AVX__
 		_mm256_zeroupper();
 	  #endif
 	  union input {
