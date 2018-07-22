@@ -1,12 +1,9 @@
 #pragma once
 
-
 #include <bitset>
 #include <array>
 #include <string>
 #include <intrin.h>
-
-
 
 class InstructionSet
 {

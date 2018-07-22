@@ -79,7 +79,7 @@ typedef sph_shabal_context sph_shabal256_context;
  * @param cc   the Shabal-256 context (pointer to a
  *             <code>sph_shabal256_context</code>)
  */
-void sph_shabal256_init(void *cc);
+void sph_shabal256_init(sph_shabal_context *cc);
 
 /**
  * Process some data bytes. It is acceptable that <code>len</code> is zero
@@ -89,7 +89,7 @@ void sph_shabal256_init(void *cc);
  * @param data   the input data
  * @param len    the input data length (in bytes)
  */
-void sph_shabal256(void *cc, const void *data, size_t len);
+void sph_shabal256(void *cc, const unsigned char *data, size_t len);
 
 /**
  * Terminate the current Shabal-256 computation and output the result into
