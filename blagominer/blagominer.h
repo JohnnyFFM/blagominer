@@ -6,13 +6,13 @@
 
 // blago version
 #ifdef __AVX2__
-	char const *const version = "v1.170997_AVX2_BFS_DEV";
+	char const *const version = "v1.170997_AVX2";
 #else
 	#ifdef __AVX__
-		char const *const version = "v1.170997_AVX_BFS_DEV";
+		char const *const version = "v1.170997_AVX";
 	#else
-			char const *const version = "v1.170997_SSE_BFS_DEV";
-		//	char const *const version = "v1.170997_BFS_DEV";
+			char const *const version = "v1.170997_SSE";
+		//	char const *const version = "v1.170997";
 	#endif
 #endif 
 
