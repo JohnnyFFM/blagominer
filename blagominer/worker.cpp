@@ -343,7 +343,7 @@ void th_read(HANDLE ifile, unsigned long long const start, unsigned long long co
 	{
 		*cache_size_local = stagger - i;  // остаток
 
-#ifdef __AVX512__
+#ifdef __AVX512F__
 		if (*cache_size_local < 16)
 		{
 			bm_wattron(12);
