@@ -21,7 +21,6 @@
 #include <stddef.h>
 #include <string.h>
 #include <immintrin.h>
-
 #include "mshabal.h"
 
 #ifdef  __cplusplus
