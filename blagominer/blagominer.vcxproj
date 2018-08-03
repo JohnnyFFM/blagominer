@@ -510,6 +510,7 @@
     <ClCompile Include="mshabal_256.c" />
     <ClCompile Include="mshabal_128.c" />
     <ClCompile Include="inout.cpp" />
+    <ClCompile Include="mshabal_512.c" />
     <ClCompile Include="picohttpparser.c" />
     <ClCompile Include="bfs.cpp" />
     <ClCompile Include="network.cpp" />

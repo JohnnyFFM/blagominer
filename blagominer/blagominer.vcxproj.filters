@@ -110,6 +110,9 @@
     <ClCompile Include="mshabal_128.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="mshabal_512.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="blagominer.rc">
