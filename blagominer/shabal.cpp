@@ -310,14 +310,14 @@ void procscoop_avx2_fast(unsigned long long const nonce, unsigned long long cons
 		u1.words[j + 5] = *(mshabal_u32 *)(sig0 + o);
 		u1.words[j + 6] = *(mshabal_u32 *)(sig0 + o);
 		u1.words[j + 7] = *(mshabal_u32 *)(sig0 + o);
-		u2.words[j + 0 + 128] = *(mshabal_u32 *)(end0 + o);
-		u2.words[j + 1 + 128] = *(mshabal_u32 *)(end0 + o);
-		u2.words[j + 2 + 128] = *(mshabal_u32 *)(end0 + o);
-		u2.words[j + 3 + 128] = *(mshabal_u32 *)(end0 + o);
-		u2.words[j + 4 + 128] = *(mshabal_u32 *)(end0 + o);
-		u2.words[j + 5 + 128] = *(mshabal_u32 *)(end0 + o);
-		u2.words[j + 6 + 128] = *(mshabal_u32 *)(end0 + o);
-		u2.words[j + 7 + 128] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 0 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 1 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 2 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 3 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 4 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 5 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 6 + 64] = *(mshabal_u32 *)(end0 + o);
+		u2.words[j + 7 + 64] = *(mshabal_u32 *)(end0 + o);
 	}
 
 	for (v = 0; v<n; v += 8) {
@@ -330,14 +330,14 @@ void procscoop_avx2_fast(unsigned long long const nonce, unsigned long long cons
 
 		for (int j = 0; j < 64 * MSHABAL256_FACTOR / 2; j += 4 * MSHABAL256_FACTOR) {
 			size_t o = j / MSHABAL256_FACTOR;
-			u1.words[j + 0 + 128] = *(mshabal_u32 *)(&cache[(v + 0) * 64] + o);
-			u1.words[j + 1 + 128] = *(mshabal_u32 *)(&cache[(v + 1) * 64] + o);
-			u1.words[j + 2 + 128] = *(mshabal_u32 *)(&cache[(v + 2) * 64] + o);
-			u1.words[j + 3 + 128] = *(mshabal_u32 *)(&cache[(v + 3) * 64] + o);
-			u1.words[j + 4 + 128] = *(mshabal_u32 *)(&cache[(v + 4) * 64] + o);
-			u1.words[j + 5 + 128] = *(mshabal_u32 *)(&cache[(v + 5) * 64] + o);
-			u1.words[j + 6 + 128] = *(mshabal_u32 *)(&cache[(v + 6) * 64] + o);
-			u1.words[j + 7 + 128] = *(mshabal_u32 *)(&cache[(v + 7) * 64] + o);
+			u1.words[j + 0 + 64] = *(mshabal_u32 *)(&cache[(v + 0) * 64] + o);
+			u1.words[j + 1 + 64] = *(mshabal_u32 *)(&cache[(v + 1) * 64] + o);
+			u1.words[j + 2 + 64] = *(mshabal_u32 *)(&cache[(v + 2) * 64] + o);
+			u1.words[j + 3 + 64] = *(mshabal_u32 *)(&cache[(v + 3) * 64] + o);
+			u1.words[j + 4 + 64] = *(mshabal_u32 *)(&cache[(v + 4) * 64] + o);
+			u1.words[j + 5 + 64] = *(mshabal_u32 *)(&cache[(v + 5) * 64] + o);
+			u1.words[j + 6 + 64] = *(mshabal_u32 *)(&cache[(v + 6) * 64] + o);
+			u1.words[j + 7 + 64] = *(mshabal_u32 *)(&cache[(v + 7) * 64] + o);
 			u2.words[j + 0] = *(mshabal_u32 *)(&cache[(v + 0) * 64 + 32] + o);
 			u2.words[j + 1] = *(mshabal_u32 *)(&cache[(v + 1) * 64 + 32] + o);
 			u2.words[j + 2] = *(mshabal_u32 *)(&cache[(v + 2) * 64 + 32] + o);
@@ -661,4 +661,3 @@ void procscoop_avx512_fast(unsigned long long const nonce, unsigned long long co
 		}
 	}
 }
-

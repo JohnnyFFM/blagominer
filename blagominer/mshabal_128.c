@@ -655,7 +655,7 @@ extern "C" {
 	  //extract results
 	  out_size_w32 = sc->out_size >> 5;
 	  off = 4 * (28 + (16 - out_size_w32));
-	  for (z = 0; z < out_size_w32; z++) {
+	  for (z = 0; z < 2; z++) {
 		  unsigned y = off + (z << 2);
 		  ((u32 *)dst0)[z] = sc->state[y + 0];
 		  ((u32 *)dst1)[z] = sc->state[y + 1];
