@@ -698,10 +698,10 @@ extern "C" {
 	  }
 	
 	  //transfer results to ram
-	  for (j = 0; j < 12; j++)
-		  _mm256_storeu_si256((__m256i *)sc->state + j, A[j]);
-	  for (j = 0; j < 16; j++) {
-		  _mm256_storeu_si256((__m256i *)sc->state + j + 12, B[j]);
+	 // for (j = 0; j < 12; j++)
+		 // _mm256_storeu_si256((__m256i *)sc->state + j, A[j]);
+	  for (j = 8; j < 10; j++) {
+		  //_mm256_storeu_si256((__m256i *)sc->state + j + 12, B[j]);
 		  _mm256_storeu_si256((__m256i *)sc->state + j + 28, C[j]);
 	  }
   }
@@ -724,7 +724,7 @@ extern "C" {
 	  //extract results
 	  out_size_w32 = sc->out_size >> 5;
 	  off = MSHABAL256_FACTOR * 4 * (28 + (16 - out_size_w32));
-	  for (z = 0; z < out_size_w32; z++) {
+	  for (z = 0; z < 2; z++) {
 		  unsigned y = off + MSHABAL256_FACTOR * (z << 2);
 		  ((u32 *)dst0)[z] = sc->state[y + 0];
 		  ((u32 *)dst1)[z] = sc->state[y + 1];

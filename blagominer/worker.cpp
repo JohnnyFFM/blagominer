@@ -342,6 +342,15 @@ void th_read(HANDLE ifile, unsigned long long const start, unsigned long long co
 	if (i + *cache_size_local > stagger)
 	{
 		*cache_size_local = stagger - i;  // остаток
+
+#ifdef __AVX512F__
+		if (*cache_size_local < 16)
+		{
+			bm_wattron(12);
+			bm_wprintw("WARNING: %llu\n", *cache_size_local);
+			bm_wattroff(12);
+		}
+#else
 #ifdef __AVX2__
 		if (*cache_size_local < 8)
 		{
@@ -357,6 +366,7 @@ void th_read(HANDLE ifile, unsigned long long const start, unsigned long long co
 			bm_wprintw("WARNING: %llu\n", *cache_size_local);
 			bm_wattroff(12);
 		}
+#endif
 #endif
 #endif
 	}
@@ -438,6 +448,9 @@ void th_hash(t_files const * const iter, double * const sum_time_proc, const siz
 	LARGE_INTEGER start_time_proc;
 	QueryPerformanceCounter(&start_time_proc);
 
+#ifdef __AVX512F__
+	procscoop_avx512_fast(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block AVX2
+#else
 #ifdef __AVX2__
 	procscoop_avx2_fast(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block AVX2
 #else
@@ -448,7 +461,7 @@ void th_hash(t_files const * const iter, double * const sum_time_proc, const siz
 		//	procscoop_sph(n + nonce + i, cache_size_local, cache, acc, iter->Name);// Process block SPH, please uncomment one of the two when compiling    
 	#endif
 #endif
-
+#endif
 	QueryPerformanceCounter(&li);
 	*sum_time_proc += (double)(li.QuadPart - start_time_proc.QuadPart);
 	worker_progress[local_num].Reads_bytes += bytes;

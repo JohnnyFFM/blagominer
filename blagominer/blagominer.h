@@ -5,6 +5,9 @@
 #include "shabal.h"
 
 // blago version
+#ifdef __AVX512F__
+	char const *const version = "v1.170997_AVX512";
+#else
 #ifdef __AVX2__
 	char const *const version = "v1.170997_AVX2";
 #else
@@ -14,6 +17,7 @@
 			char const *const version = "v1.170997_SSE";
 		//	char const *const version = "v1.170997";
 	#endif
+#endif 
 #endif 
 
 extern HANDLE hHeap;							//heap
