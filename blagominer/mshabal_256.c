@@ -698,10 +698,10 @@ extern "C" {
 	  }
 	
 	  //transfer results to ram
-	  for (j = 0; j < 12; j++)
-		  _mm256_storeu_si256((__m256i *)sc->state + j, A[j]);
-	  for (j = 0; j < 16; j++) {
-		  _mm256_storeu_si256((__m256i *)sc->state + j + 12, B[j]);
+	 // for (j = 0; j < 12; j++)
+		 // _mm256_storeu_si256((__m256i *)sc->state + j, A[j]);
+	  for (j = 8; j < 10; j++) {
+		  //_mm256_storeu_si256((__m256i *)sc->state + j + 12, B[j]);
 		  _mm256_storeu_si256((__m256i *)sc->state + j + 28, C[j]);
 	  }
   }
