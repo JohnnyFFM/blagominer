@@ -79,14 +79,14 @@ extern "C" {
 				u.words[j + 5] = *(u32 *)(buf5 + o);
 				u.words[j + 6] = *(u32 *)(buf6 + o);
 				u.words[j + 7] = *(u32 *)(buf7 + o);
-				u.words[j + 0] = *(u32 *)(buf8 + o);
-				u.words[j + 1] = *(u32 *)(buf9 + o);
-				u.words[j + 2] = *(u32 *)(buf10 + o);
-				u.words[j + 3] = *(u32 *)(buf11 + o);
-				u.words[j + 4] = *(u32 *)(buf12 + o);
-				u.words[j + 5] = *(u32 *)(buf13 + o);
-				u.words[j + 6] = *(u32 *)(buf14 + o);
-				u.words[j + 7] = *(u32 *)(buf15 + o);
+				u.words[j + 8] = *(u32 *)(buf8 + o);
+				u.words[j + 9] = *(u32 *)(buf9 + o);
+				u.words[j + 10] = *(u32 *)(buf10 + o);
+				u.words[j + 11] = *(u32 *)(buf11 + o);
+				u.words[j + 12] = *(u32 *)(buf12 + o);
+				u.words[j + 13] = *(u32 *)(buf13 + o);
+				u.words[j + 14] = *(u32 *)(buf14 + o);
+				u.words[j + 15] = *(u32 *)(buf15 + o);
 			}
 
 			for (j = 0; j < 16; j++)
